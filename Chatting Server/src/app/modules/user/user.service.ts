@@ -1,3 +1,4 @@
+// src\app\modules\user\user.service.ts
 import { StatusCodes } from 'http-status-codes';
 import { JwtPayload } from 'jsonwebtoken';
 import mongoose, { SortOrder, startSession } from 'mongoose';
@@ -182,10 +183,52 @@ const getSingleUser = async (id: string): Promise<IUser | null> => {
   return result;
 };
 
+const updateUserOnlineStatus = async (userId: string, isOnline: boolean) => {
+  console.log(`Updating user ${userId} online status to: ${isOnline}`);
+
+  try {
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        onlineStatus: isOnline,
+        lastActiveAt: new Date(),
+      },
+      { new: true }
+    );
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    console.log(`User ${userId} online status updated successfully`);
+    return user;
+  } catch (error) {
+    console.error('Error updating user online status:', error);
+    throw error;
+  }
+};
+
+const getOnlineUsers = async () => {
+  console.log('Fetching online users');
+  try {
+    const onlineUsers = await User.find({
+      onlineStatus: true,
+    }).select('name email profileImage');
+
+    console.log(`Found ${onlineUsers.length} online users`);
+    return onlineUsers;
+  } catch (error) {
+    console.error('Error fetching online users:', error);
+    throw error;
+  }
+};
+
 export const UserService = {
   createUserFromDb,
   getUserProfileFromDB,
   updateProfileToDB,
   getAllUsers,
   getSingleUser,
+  getOnlineUsers,
+  updateUserOnlineStatus,
 };

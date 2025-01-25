@@ -7,6 +7,8 @@ import config from '../../../config';
 
 const verifyEmail = catchAsync(async (req: Request, res: Response) => {
   const { ...verifyData } = req.body;
+  console.log('OTP Verification Email Line 101::', verifyData);
+
   const result = await AuthService.verifyEmailToDB(verifyData);
 
   sendResponse(res, {
@@ -97,8 +99,8 @@ const newAccessToken = catchAsync(async (req: Request, res: Response) => {
 
 const resendVerificationEmail = catchAsync(
   async (req: Request, res: Response) => {
+    // console.log('OTP Verification Email Line 101::', req.body);
     const { email } = req.body;
-    console.log('OTP Verification Email', email);
     const result = await AuthService.resendVerificationEmailToDB(email);
 
     sendResponse(res, {

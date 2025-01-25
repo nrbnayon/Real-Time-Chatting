@@ -14,6 +14,8 @@ export type IUser = {
   verified: boolean;
   profileImage: string;
   image: string;
+  onlineStatus?: boolean;
+  lastActiveAt?: Date;
   authentication?: {
     isResetPassword: boolean;
     oneTimeCode: number;

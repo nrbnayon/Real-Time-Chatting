@@ -60,6 +60,14 @@ const userSchema = new Schema<IUser, UserModal>(
       default:
         'https://www.shutterstock.com/shutterstock/photos/1153673752/display_1500/stock-vector-profile-placeholder-image-gray-silhouette-no-photo-1153673752.jpg',
     },
+    onlineStatus: {
+      type: Boolean,
+      default: false
+    },
+    lastActiveAt: {
+      type: Date,
+      default: null
+    },
     authentication: {
       type: {
         isResetPassword: {

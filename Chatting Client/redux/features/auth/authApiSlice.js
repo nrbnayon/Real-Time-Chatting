@@ -28,8 +28,9 @@ export const authApiSlice = apiSlice.injectEndpoints({
                 id: decodedToken.id,
                 role: decodedToken.role,
                 email: decodedToken.email,
+                name: decodedToken.name,
               };
-
+              // console.log("User data from access token", userData);
               dispatch(setCredentials(userData));
             } else {
               logger.warn("Login successful but no access token received");

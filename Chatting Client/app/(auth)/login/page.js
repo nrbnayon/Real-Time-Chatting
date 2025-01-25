@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -25,16 +25,22 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
 
+  useEffect(() => {
+    const storedEmail = sessionStorage.getItem("registrationEmail");
+    if (storedEmail) {
+      router.push("/otp-verify");
+    }
+  }, [router]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     try {
       const result = await login(formData.email, formData.password);
       if (result.success) {
-        console.log("result:", result);
-        // router.push("/chat");
+        // console.log("result:", result);
+        router.push("/dashboard");
       } else {
-        // Handle login failure (show error message)
         console.error(result.error);
       }
     } catch (error) {

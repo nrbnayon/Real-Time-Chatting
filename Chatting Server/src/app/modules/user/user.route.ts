@@ -1,3 +1,4 @@
+// src\app\modules\user\user.route.ts
 import express, { NextFunction, Request, Response } from 'express';
 import { USER_ROLES } from '../../../enums/user';
 import auth from '../../middlewares/auth';
@@ -74,6 +75,20 @@ router.get(
   '/profile',
   auth(USER_ROLES.ADMIN, USER_ROLES.USER),
   UserController.getUserProfile
+);
+
+// Get online users route
+router.get(
+  '/online-users', 
+  auth(USER_ROLES.USER, USER_ROLES.ADMIN),
+  UserController.getOnlineUsers
+);
+
+// Update online status route
+router.patch(
+  '/online-status',
+  auth(USER_ROLES.USER, USER_ROLES.ADMIN),
+  UserController.updateOnlineStatus
 );
 
 export const UserRoutes = router;

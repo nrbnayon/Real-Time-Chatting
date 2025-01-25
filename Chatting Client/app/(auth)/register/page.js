@@ -16,6 +16,8 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { toast } from "react-hot-toast";
 import { useRegisterMutation } from "@/redux/features/auth/authApiSlice";
+import Link from "next/link";
+import Logo from "@/assets/icons/chat.png";
 
 export default function Register() {
   const router = useRouter();
@@ -45,7 +47,11 @@ export default function Register() {
 
   useEffect(() => {
     setIsClient(true);
-  }, []);
+    const storedEmail = sessionStorage.getItem("registrationEmail");
+    if (storedEmail) {
+      router.push("/otp-verify");
+    }
+  }, [router]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -133,7 +139,7 @@ export default function Register() {
 
       const result = await registerMutation(formDataToSubmit).unwrap();
 
-      console.log("Received detailed registration result:", result);
+      // console.log("Received detailed registration result:", result);
 
       if (result.success) {
         const email = result.email;
@@ -211,29 +217,36 @@ export default function Register() {
   }
 
   return (
-    <div className='flex items-center justify-center p-4 bg-white dark:bg-black'>
-      <Card className='w-full max-w-prose rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black'>
-        <CardHeader className='space-y-2 flex items-center justify-center flex-col text-center'>
-          <MessageCircle className='w-12 h-12 mx-auto text-neutral-800 dark:text-neutral-200' />
-          <h2 className='font-bold text-xl text-neutral-800 dark:text-neutral-200'>
+    <div className="flex items-center justify-center p-4 bg-white dark:bg-black">
+      <Card className="w-full max-w-prose rounded-none md:rounded-2xl px-4 shadow-input bg-white dark:bg-black">
+        <CardHeader className="space-y-2 flex items-center justify-center flex-col text-center">
+          {/* <MessageCircle className="w-12 h-12 mx-auto text-neutral-800 dark:text-neutral-200" /> */}
+          <Image
+            src={Logo}
+            alt="Chatters"
+            width={100}
+            height={100}
+            className="mx-auto"
+          />
+          <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
             Welcome! Create Account
           </h2>
-          <p className='text-neutral-600 text-center text-sm max-w-sm mt-2 dark:text-neutral-300'>
+          <p className="text-neutral-600 text-center text-sm max-w-sm mt-2 dark:text-neutral-300">
             Register to join our amazing community
           </p>
         </CardHeader>
 
-        <form onSubmit={handleSubmit} className='my-4'>
+        <form onSubmit={handleSubmit} className="my-4">
           {/* Name Field */}
-          <div className='flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4'>
-            <div className='w-full'>
-              <Label htmlFor='firstName'>
-                First name <span className='text-red-500'>*</span>
+          <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
+            <div className="w-full">
+              <Label htmlFor="firstName">
+                First name <span className="text-red-500">*</span>
               </Label>
               <Input
-                id='firstName'
-                placeholder='John'
-                type='text'
+                id="firstName"
+                placeholder="John"
+                type="text"
                 value={formData.firstName}
                 onChange={(e) =>
                   setFormData({ ...formData, firstName: e.target.value })
@@ -241,18 +254,18 @@ export default function Register() {
                 required
               />
               {errors.firstName && (
-                <div className='text-red-500 flex items-center gap-2 mt-1'>
+                <div className="text-red-500 flex items-center gap-2 mt-1">
                   <AlertTriangle size={16} />
                   {errors.firstName}
                 </div>
               )}
             </div>
-            <div className='w-full'>
-              <Label htmlFor='lastName'>Last name</Label>
+            <div className="w-full">
+              <Label htmlFor="lastName">Last name</Label>
               <Input
-                id='lastName'
-                placeholder='Doe'
-                type='text'
+                id="lastName"
+                placeholder="Doe"
+                type="text"
                 value={formData.lastName}
                 onChange={(e) =>
                   setFormData({ ...formData, lastName: e.target.value })
@@ -262,12 +275,12 @@ export default function Register() {
           </div>
 
           {/* Phone Input */}
-          <div className='space-y-2 mb-4'>
-            <Label htmlFor='phone'>Phone Number</Label>
+          <div className="space-y-2 mb-4">
+            <Label htmlFor="phone">Phone Number</Label>
             <Input
-              id='phone'
-              type='tel'
-              placeholder='Enter your phone number'
+              id="phone"
+              type="tel"
+              placeholder="Enter your phone number"
               value={formData.phone}
               onChange={(e) =>
                 setFormData({ ...formData, phone: e.target.value })
@@ -276,14 +289,14 @@ export default function Register() {
           </div>
 
           {/* Email Input */}
-          <div className='space-y-2 mb-4'>
-            <Label htmlFor='email'>
-              Email <span className='text-red-500'>*</span>
+          <div className="space-y-2 mb-4">
+            <Label htmlFor="email">
+              Email <span className="text-red-500">*</span>
             </Label>
             <Input
-              id='email'
-              type='email'
-              placeholder='Enter your email'
+              id="email"
+              type="email"
+              placeholder="Enter your email"
               value={formData.email}
               onChange={(e) =>
                 setFormData({ ...formData, email: e.target.value })
@@ -291,7 +304,7 @@ export default function Register() {
               required
             />
             {errors.email && (
-              <div className='text-red-500 flex items-center gap-2 mt-1'>
+              <div className="text-red-500 flex items-center gap-2 mt-1">
                 <AlertTriangle size={16} />
                 {errors.email}
               </div>
@@ -299,15 +312,15 @@ export default function Register() {
           </div>
 
           {/* Password Input */}
-          <div className='space-y-2 relative mb-4'>
-            <Label htmlFor='password'>
-              Password <span className='text-red-500'>*</span>
+          <div className="space-y-2 relative mb-4">
+            <Label htmlFor="password">
+              Password <span className="text-red-500">*</span>
             </Label>
-            <div className='relative'>
+            <div className="relative">
               <Input
-                id='password'
+                id="password"
                 type={showPassword.password ? "text" : "password"}
-                placeholder='Create a password'
+                placeholder="Create a password"
                 value={formData.password}
                 onChange={(e) =>
                   setFormData({ ...formData, password: e.target.value })
@@ -315,8 +328,8 @@ export default function Register() {
                 required
               />
               <button
-                type='button'
-                className='absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground'
+                type="button"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground"
                 onClick={() => togglePasswordVisibility("password")}
               >
                 {showPassword.password ? (
@@ -327,7 +340,7 @@ export default function Register() {
               </button>
             </div>
             {errors.password && (
-              <div className='text-red-500 flex items-center gap-2 mt-1'>
+              <div className="text-red-500 flex items-center gap-2 mt-1">
                 <AlertTriangle size={16} />
                 {errors.password}
               </div>
@@ -335,15 +348,15 @@ export default function Register() {
           </div>
 
           {/* Confirm Password Input */}
-          <div className='space-y-2 relative mb-4'>
-            <Label htmlFor='confirmPassword'>
-              Confirm Password <span className='text-red-500'>*</span>
+          <div className="space-y-2 relative mb-4">
+            <Label htmlFor="confirmPassword">
+              Confirm Password <span className="text-red-500">*</span>
             </Label>
-            <div className='relative'>
+            <div className="relative">
               <Input
-                id='confirmPassword'
+                id="confirmPassword"
                 type={showPassword.confirmPassword ? "text" : "password"}
-                placeholder='Confirm your password'
+                placeholder="Confirm your password"
                 value={formData.confirmPassword}
                 onChange={(e) =>
                   setFormData({
@@ -354,8 +367,8 @@ export default function Register() {
                 required
               />
               <button
-                type='button'
-                className='absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground'
+                type="button"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground"
                 onClick={() => togglePasswordVisibility("confirmPassword")}
               >
                 {showPassword.confirmPassword ? (
@@ -366,7 +379,7 @@ export default function Register() {
               </button>
             </div>
             {errors.confirmPassword && (
-              <div className='text-red-500 flex items-center gap-2 mt-1'>
+              <div className="text-red-500 flex items-center gap-2 mt-1">
                 <AlertTriangle size={16} />
                 {errors.confirmPassword}
               </div>
@@ -374,9 +387,9 @@ export default function Register() {
           </div>
 
           {/* Profile Image Upload */}
-          <div className='mb-8'>
+          <div className="mb-6">
             <Label>
-              Upload Profile Image <span className='text-red-500'>*</span>
+              Upload Profile Image <span className="text-red-500">*</span>
             </Label>
             <div
               className={cn(
@@ -389,38 +402,38 @@ export default function Register() {
               onDrop={handleDrop}
             >
               <input
-                type='file'
+                type="file"
                 ref={fileInputRef}
-                accept='image/*'
-                className='hidden'
+                accept="image/*"
+                className="hidden"
                 onChange={(e) => handleFileChange(e.target.files[0])}
               />
               {formData.image ? (
-                <div className='relative'>
+                <div className="relative">
                   <Image
                     src={URL.createObjectURL(formData.image)}
-                    alt='Profile'
+                    alt="Profile"
                     width={150}
                     height={150}
-                    className='mx-auto max-h-32 rounded-lg object-cover'
+                    className="mx-auto max-h-32 rounded-lg object-cover"
                   />
                   <button
-                    type='button'
+                    type="button"
                     onClick={removeProfileImage}
-                    className='absolute top-0 right-0 bg-red-500 text-white rounded-full p-1'
+                    className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
                   >
                     <XCircle size={20} />
                   </button>
                 </div>
               ) : (
                 <div
-                  className='flex flex-col items-center justify-center cursor-pointer'
+                  className="flex flex-col items-center justify-center cursor-pointer"
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  <Upload className='mx-auto h-6 w-6 text-neutral-500 mb-2' />
-                  <p className='text-sm text-neutral-500'>
+                  <Upload className="mx-auto h-6 w-6 text-neutral-500 mb-2" />
+                  <p className="text-sm text-neutral-500">
                     Drag & Drop or{" "}
-                    <span className='text-neutral-700 font-medium cursor-pointer hover:underline'>
+                    <span className="text-neutral-700 font-medium cursor-pointer hover:underline">
                       Browse
                     </span>
                   </p>
@@ -428,7 +441,7 @@ export default function Register() {
               )}
             </div>
             {errors.image && (
-              <div className='text-red-500 flex items-center gap-2'>
+              <div className="text-red-500 flex items-center gap-2">
                 <AlertTriangle size={16} />
                 {errors.image}
               </div>
@@ -437,22 +450,23 @@ export default function Register() {
 
           {/* Submit Button */}
           <button
-            className='bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]'
-            type='submit'
+            className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+            type="submit"
             disabled={isLoading}
           >
             {isLoading ? "Creating Account..." : "Sign up →"}
-            <BottomGradient />
           </button>
         </form>
+        <p className="text-sm text-center text-muted-foreground pb-4">
+          Already have an account?{" "}
+          <Link
+            href="/login"
+            className="text-primary hover:underline font-medium"
+          >
+            Login
+          </Link>
+        </p>
       </Card>
     </div>
   );
 }
-
-const BottomGradient = () => (
-  <>
-    <span className='group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-cyan-500 to-transparent' />
-    <span className='group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-indigo-500 to-transparent' />
-  </>
-);

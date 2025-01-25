@@ -1,6 +1,11 @@
 {
-  "/api/login/route": "app/api/login/route.js",
-  "/(routes)/login/page": "app/(routes)/login/page.js",
+  "/page": "app/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/(auth)/register/page": "app/(auth)/register/page.js",
+  "/api/user/route": "app/api/user/route.js",
+  "/(auth)/otp-verify/page": "app/(auth)/otp-verify/page.js",
+  "/api/otp-resend/route": "app/api/otp-resend/route.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/api/user/route": "app/api/user/route.js"
+  "/(auth)/login/page": "app/(auth)/login/page.js",
+  "/api/otp-verify/route": "app/api/otp-verify/route.js"
 }

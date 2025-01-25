@@ -151,12 +151,13 @@ function VerifyOTP() {
                 setEmail(storedEmail);
             }
             if (expireTime) {
-                const remainingTime = parseInt(expireTime) - new Date().getTime();
+                const remainingTime = Math.max(0, parseInt(expireTime) - new Date().getTime());
                 if (remainingTime > 0) {
                     setIsResendDisabled(true);
+                    setTimeRemaining(Math.ceil(remainingTime / 1000));
                     const timer = setInterval({
                         "VerifyOTP.useEffect.timer": ()=>{
-                            const currentRemaining = parseInt(expireTime) - new Date().getTime();
+                            const currentRemaining = Math.max(0, parseInt(expireTime) - new Date().getTime());
                             if (currentRemaining <= 0) {
                                 clearInterval(timer);
                                 setIsResendDisabled(false);
@@ -207,6 +208,7 @@ function VerifyOTP() {
         }
         try {
             setIsLoading(true);
+            console.log("email", email);
             const result = await resendOtp(email);
             if (result?.success) {
                 const newExpireTime = new Date().getTime() + 3 * 60 * 1000;
@@ -225,7 +227,7 @@ function VerifyOTP() {
         }
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-        className: "flex items-center justify-center min-h-screen bg-gray-100 p-4",
+        className: "flex items-center justify-center min-h-screen-200px my-auto  p-4",
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
             className: "w-full max-w-md",
             children: [
@@ -236,7 +238,7 @@ function VerifyOTP() {
                             className: "mx-auto h-12 w-12 text-green-600"
                         }, void 0, false, {
                             fileName: "[project]/app/(routes)/otp-verify/page.js",
-                            lineNumber: 126,
+                            lineNumber: 135,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -244,7 +246,7 @@ function VerifyOTP() {
                             children: "Verify Your Account"
                         }, void 0, false, {
                             fileName: "[project]/app/(routes)/otp-verify/page.js",
-                            lineNumber: 127,
+                            lineNumber: 136,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -252,13 +254,13 @@ function VerifyOTP() {
                             children: "Enter the OTP sent to your email"
                         }, void 0, false, {
                             fileName: "[project]/app/(routes)/otp-verify/page.js",
-                            lineNumber: 128,
+                            lineNumber: 137,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/(routes)/otp-verify/page.js",
-                    lineNumber: 125,
+                    lineNumber: 134,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -273,7 +275,7 @@ function VerifyOTP() {
                                         children: "Email"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(routes)/otp-verify/page.js",
-                                        lineNumber: 135,
+                                        lineNumber: 144,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -286,13 +288,13 @@ function VerifyOTP() {
                                         className: "bg-gray-100 cursor-not-allowed"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(routes)/otp-verify/page.js",
-                                        lineNumber: 136,
+                                        lineNumber: 145,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(routes)/otp-verify/page.js",
-                                lineNumber: 134,
+                                lineNumber: 143,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -302,7 +304,7 @@ function VerifyOTP() {
                                         children: "One-Time Password (OTP)"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(routes)/otp-verify/page.js",
-                                        lineNumber: 147,
+                                        lineNumber: 156,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -314,13 +316,13 @@ function VerifyOTP() {
                                         maxLength: 6
                                     }, void 0, false, {
                                         fileName: "[project]/app/(routes)/otp-verify/page.js",
-                                        lineNumber: 148,
+                                        lineNumber: 157,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(routes)/otp-verify/page.js",
-                                lineNumber: 146,
+                                lineNumber: 155,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -330,20 +332,20 @@ function VerifyOTP() {
                                 children: isLoading ? "Verifying..." : "Verify Account"
                             }, void 0, false, {
                                 fileName: "[project]/app/(routes)/otp-verify/page.js",
-                                lineNumber: 157,
+                                lineNumber: 166,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "text-center text-sm text-muted-foreground space-y-2",
                                 children: isResendDisabled && timeRemaining > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                     children: [
-                                        "Resend OTP available in ",
+                                        "OTP Expire in ",
                                         timeRemaining,
                                         " seconds"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(routes)/otp-verify/page.js",
-                                    lineNumber: 162,
+                                    lineNumber: 171,
                                     columnNumber: 17
                                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
                                     type: "button",
@@ -356,41 +358,41 @@ function VerifyOTP() {
                                             className: "mr-2 h-4 w-4"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(routes)/otp-verify/page.js",
-                                            lineNumber: 171,
+                                            lineNumber: 180,
                                             columnNumber: 19
                                         }, this),
                                         "Resend OTP"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(routes)/otp-verify/page.js",
-                                    lineNumber: 164,
+                                    lineNumber: 173,
                                     columnNumber: 17
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/(routes)/otp-verify/page.js",
-                                lineNumber: 160,
+                                lineNumber: 169,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(routes)/otp-verify/page.js",
-                        lineNumber: 133,
+                        lineNumber: 142,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/app/(routes)/otp-verify/page.js",
-                    lineNumber: 132,
+                    lineNumber: 141,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/app/(routes)/otp-verify/page.js",
-            lineNumber: 124,
+            lineNumber: 133,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/app/(routes)/otp-verify/page.js",
-        lineNumber: 123,
+        lineNumber: 132,
         columnNumber: 5
     }, this);
 }

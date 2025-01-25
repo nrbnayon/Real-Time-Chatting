@@ -14,7 +14,6 @@ export async function POST(request) {
   try {
     const { email, otp } = await request.json();
 
-    // console.log("Getting API key...email, otp...", email, otp);
 
     const response = await fetch(`${apiUrl}/api/v1/auth/verify-email`, {
       method: "POST",

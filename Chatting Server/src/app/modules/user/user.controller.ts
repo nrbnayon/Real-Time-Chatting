@@ -1,3 +1,4 @@
+// src\app\modules\user\user.controller.ts
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../../shared/catchAsync';
@@ -92,10 +93,54 @@ const getSingleUser = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getOnlineUsers = catchAsync(async (req: Request, res: Response) => {
+  // Replace console.log with a logging library in production
+  console.debug('Controller: Retrieving online users');
+
+  const onlineUsers = await UserService.getOnlineUsers();
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: `Online users retrieved successfully. Total: ${onlineUsers.length}`,
+    data: onlineUsers,
+  });
+});
+
+const updateOnlineStatus = catchAsync(async (req: Request, res: Response) => {
+  const { userId, status } = req.body;
+
+  // Input validation
+  if (!userId || typeof status !== 'boolean') {
+    return sendResponse(res, {
+      success: false,
+      statusCode: StatusCodes.BAD_REQUEST,
+      message: 'Invalid userId or status. Please provide valid inputs.',
+    });
+  }
+
+  // Replace console.log with a logging library in production
+  console.debug(
+    `Controller: Updating user ${userId} online status to ${status}`
+  );
+
+  const updatedUser = await UserService.updateUserOnlineStatus(userId, status);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: `User online status updated successfully to ${
+      status ? 'online' : 'offline'
+    }`,
+    data: updatedUser,
+  });
+});
+
+
 export const UserController = {
   createUser,
   getUserProfile,
   updateProfile,
   getAllUser,
-  getSingleUser,
+  getSingleUser,getOnlineUsers,updateOnlineStatus
 };

@@ -27,12 +27,20 @@ export default function VerifyOTP() {
     }
 
     if (expireTime) {
-      const remainingTime = parseInt(expireTime) - new Date().getTime();
+      const remainingTime = Math.max(
+        0,
+        parseInt(expireTime) - new Date().getTime()
+      );
 
       if (remainingTime > 0) {
         setIsResendDisabled(true);
+        setTimeRemaining(Math.ceil(remainingTime / 1000));
+
         const timer = setInterval(() => {
-          const currentRemaining = parseInt(expireTime) - new Date().getTime();
+          const currentRemaining = Math.max(
+            0,
+            parseInt(expireTime) - new Date().getTime()
+          );
           if (currentRemaining <= 0) {
             clearInterval(timer);
             setIsResendDisabled(false);
@@ -105,6 +113,7 @@ export default function VerifyOTP() {
         );
         setIsResendDisabled(true);
         setTimeRemaining(180);
+        window.location.reload();
       } else {
         toast.error(result?.message || "Failed to resend OTP");
       }
@@ -120,55 +129,67 @@ export default function VerifyOTP() {
   };
 
   return (
-    <div className='flex items-center justify-center min-h-screen bg-gray-100 p-4'>
-      <Card className='w-full max-w-md'>
-        <CardHeader className='text-center'>
-          <ShieldCheck className='mx-auto h-12 w-12 text-green-600' />
-          <h2 className='text-2xl font-bold mt-4'>Verify Your Account</h2>
-          <p className='text-muted-foreground'>
+    <div className="flex items-center justify-center min-h-screen-200px my-auto p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <ShieldCheck className="mx-auto h-12 w-12 text-green-600" />
+          <h2 className="text-2xl font-bold mt-4">Verify Your Account</h2>
+          <p className="text-muted-foreground">
             Enter the OTP sent to your email
           </p>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className='space-y-4'>
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label htmlFor='email'>Email</Label>
+              <Label htmlFor="email">Your Email</Label>
               <Input
-                id='email'
-                type='email'
+                id="email"
+                type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder='Enter your email'
+                placeholder="Enter your email"
                 readOnly
-                className='bg-gray-100 cursor-not-allowed'
+                className="bg-gray-100 cursor-not-allowed"
               />
             </div>
             <div>
-              <Label htmlFor='otp'>One-Time Password (OTP)</Label>
+              <Label htmlFor="otp">One-Time Password (OTP)</Label>
               <Input
-                id='otp'
-                type='text'
+                id="otp"
+                type="text"
                 value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                placeholder='Enter 6-digit OTP'
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d*$/.test(value)) {
+                    setOtp(value);
+                  }
+                }}
+                placeholder="Enter 6-digit OTP"
                 maxLength={6}
               />
             </div>
-            <Button type='submit' className='w-full' disabled={isLoading}>
+
+            <Button
+              type="submit"
+              className="w-full bg-green-600 hover:bg-green-700 text-white"
+              disabled={isLoading}
+            >
               {isLoading ? "Verifying..." : "Verify Account"}
             </Button>
-            <div className='text-center text-sm text-muted-foreground space-y-2'>
+            <div className="text-center text-sm text-muted-foreground space-y-2">
               {isResendDisabled && timeRemaining > 0 ? (
-                <p>Resend OTP available in {timeRemaining} seconds</p>
+                <div className="w-full p-2 bg-yellow-100 text-yellow-800 rounded">
+                  OTP Expires in {timeRemaining} seconds
+                </div>
               ) : (
                 <Button
-                  type='button'
-                  variant='outline'
-                  className='w-full'
+                  type="button"
+                  variant="outline"
+                  className="w-full border-blue-500 text-blue-600 hover:bg-blue-50"
                   onClick={handleResendOTP}
                   disabled={isResendDisabled || isLoading}
                 >
-                  <RefreshCw className='mr-2 h-4 w-4' />
+                  <RefreshCw className="mr-2 h-4 w-4" />
                   Resend OTP
                 </Button>
               )}

@@ -5,7 +5,7 @@ export async function POST(request) {
   const apiUrl = process.env.API_URL;
 
   if (!apiUrl) {
-    console.error("API_URL is not defined");
+    console.log("API_URL is not defined");
     return NextResponse.json(
       { success: false, message: "Server configuration error" },
       { status: 500 }
@@ -15,7 +15,7 @@ export async function POST(request) {
   try {
     const { email } = await request.json();
 
-    const response = await fetch(`${apiUrl}/api/v1/auth/verify-email`, {
+    const response = await fetch(`${apiUrl}/api/v1/auth/resend-otp`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -24,8 +24,6 @@ export async function POST(request) {
     });
 
     const data = await response.json();
-
-    console.log("Response from server", data);
 
     if (!response.ok) {
       console.error("External API error:", data);

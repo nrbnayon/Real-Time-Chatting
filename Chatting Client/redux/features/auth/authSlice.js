@@ -15,6 +15,7 @@ const authSlice = createSlice({
         id: action.payload.id,
         role: action.payload.role,
         email: action.payload.email,
+        name: action.payload.name,
         token: action.payload.token,
       };
       state.isLoggedIn = true;
