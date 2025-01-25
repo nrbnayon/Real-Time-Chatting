@@ -1,0 +1,3 @@
+{
+  "/(routes)/register/page": "app/(routes)/register/page.js"
+}

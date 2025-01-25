@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file://C%3A/Users/nrbna/Desktop/Real%20Time%20Chatting/Chatting%20Client/app/%28routes%29/layout.js"],"sourcesContent":["export default function RouteLayout({ children }) {\r\n  return (\r\n    <section>\r\n      <div>{children}</div>\r\n    </section>\r\n  );\r\n}\r\n"],"names":[],"mappings":";;;;;AAAe,SAAS,YAAY,EAAE,QAAQ,EAAE;IAC9C,qBACE,8OAAC;kBACC,cAAA,8OAAC;sBAAK;;;;;;;;;;;AAGZ"}},
+    {"offset": {"line": 27, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"A"}}]
+}
