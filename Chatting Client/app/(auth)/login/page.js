@@ -39,7 +39,7 @@ export default function Login() {
       const result = await login(formData.email, formData.password);
       if (result.success) {
         // console.log("result:", result);
-        router.push("/dashboard");
+        router.push("/welcome");
       } else {
         console.error(result.error);
       }

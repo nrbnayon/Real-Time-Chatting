@@ -213,6 +213,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$reduxjs$2f
 const store = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__["configureStore"])({
     reducer: {
         todos: __TURBOPACK__imported__module__$5b$project$5d2f$redux$2f$features$2f$todosSlice$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"],
+        auth: authReducer,
         [__TURBOPACK__imported__module__$5b$project$5d2f$redux$2f$services$2f$todosApi$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["todosApi"].reducerPath]: __TURBOPACK__imported__module__$5b$project$5d2f$redux$2f$services$2f$todosApi$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["todosApi"].reducer,
         [__TURBOPACK__imported__module__$5b$project$5d2f$redux$2f$services$2f$apiSlice$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["apiSlice"].reducerPath]: __TURBOPACK__imported__module__$5b$project$5d2f$redux$2f$services$2f$apiSlice$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["apiSlice"].reducer
     },
@@ -268,12 +269,10 @@ const authSlice = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modul
     initialState,
     reducers: {
         setCredentials: (state, action)=>{
+            console.log("Setting credentials:", action.payload);
             state.user = {
-                id: action.payload.id,
-                role: action.payload.role,
-                email: action.payload.email,
-                name: action.payload.name,
-                token: action.payload.token
+                ...state.user,
+                ...action.payload
             };
             state.isLoggedIn = true;
             state.isLoading = false;
@@ -363,8 +362,8 @@ const authApiSlice = __TURBOPACK__imported__module__$5b$project$5d2f$redux$2f$se
                                     email: decodedToken.email,
                                     name: decodedToken.name
                                 };
-                                // console.log("User data from access token", userData);
                                 dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$redux$2f$features$2f$auth$2f$authSlice$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["setCredentials"])(userData));
+                                console.log("User data from access token", userData);
                             } else {
                                 __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$logger$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].warn("Login successful but no access token received");
                             }
@@ -455,9 +454,10 @@ const authApiSlice = __TURBOPACK__imported__module__$5b$project$5d2f$redux$2f$se
                 async onQueryStarted (arg, { queryFulfilled, dispatch }) {
                     try {
                         const { data } = await queryFulfilled;
-                        console.log("data from my profile api...:", data);
-                        if (data.user) {
-                            dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$redux$2f$features$2f$auth$2f$authSlice$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["setCredentials"])(data.user));
+                        // console.log("data from my profile api...:", data);
+                        if (data.user?.data) {
+                            console.log("data from my profile api...:", data.user?.data);
+                            dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$redux$2f$features$2f$auth$2f$authSlice$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["setCredentials"])(data.user?.data));
                         }
                     } catch  {
                         dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$redux$2f$features$2f$auth$2f$authSlice$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["clearCredentials"])());
@@ -1909,6 +1909,7 @@ const UserMenu = ()=>{
     const pathname = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["usePathname"])();
     const dispatch = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$redux$2f$dist$2f$react$2d$redux$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useDispatch"])();
     const { user } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$redux$2f$dist$2f$react$2d$redux$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useSelector"])((state)=>state.auth) || {};
+    console.log("UserMenu user:", user);
     const { logout } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$hooks$2f$useAuth$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useAuth"])();
     const isPrivateRoute = __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$protectedRoutes$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["protectedRoutes"].some((route)=>pathname.startsWith(route));
     const menuItems = [
@@ -1919,7 +1920,7 @@ const UserMenu = ()=>{
                 size: 17
             }, void 0, false, {
                 fileName: "[project]/components/Auth/UserMenu.js",
-                lineNumber: 38,
+                lineNumber: 40,
                 columnNumber: 13
             }, this),
             className: "hover:bg-slate-200"
@@ -1931,7 +1932,7 @@ const UserMenu = ()=>{
                 size: 17
             }, void 0, false, {
                 fileName: "[project]/components/Auth/UserMenu.js",
-                lineNumber: 44,
+                lineNumber: 46,
                 columnNumber: 13
             }, this),
             className: "hover:bg-slate-200"
@@ -1943,7 +1944,7 @@ const UserMenu = ()=>{
                 size: 17
             }, void 0, false, {
                 fileName: "[project]/components/Auth/UserMenu.js",
-                lineNumber: 50,
+                lineNumber: 52,
                 columnNumber: 13
             }, this),
             className: "hover:bg-slate-200"
@@ -1982,7 +1983,7 @@ const UserMenu = ()=>{
                                     priority: true
                                 }, void 0, false, {
                                     fileName: "[project]/components/Auth/UserMenu.js",
-                                    lineNumber: 77,
+                                    lineNumber: 79,
                                     columnNumber: 17
                                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "h-full w-full border border-slate-300 rounded-full flex items-center justify-center bg-white",
@@ -1991,17 +1992,17 @@ const UserMenu = ()=>{
                                         className: "text-slate-600 group-hover:text-slate-800 transition"
                                     }, void 0, false, {
                                         fileName: "[project]/components/Auth/UserMenu.js",
-                                        lineNumber: 87,
+                                        lineNumber: 89,
                                         columnNumber: 19
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/components/Auth/UserMenu.js",
-                                    lineNumber: 86,
+                                    lineNumber: 88,
                                     columnNumber: 17
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/components/Auth/UserMenu.js",
-                                lineNumber: 75,
+                                lineNumber: 77,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2011,23 +2012,23 @@ const UserMenu = ()=>{
                                     className: "text-white"
                                 }, void 0, false, {
                                     fileName: "[project]/components/Auth/UserMenu.js",
-                                    lineNumber: 95,
+                                    lineNumber: 97,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/components/Auth/UserMenu.js",
-                                lineNumber: 94,
+                                lineNumber: 96,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/Auth/UserMenu.js",
-                        lineNumber: 74,
+                        lineNumber: 76,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/components/Auth/UserMenu.js",
-                    lineNumber: 73,
+                    lineNumber: 75,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$dropdown$2d$menu$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DropdownMenuContent"], {
@@ -2046,7 +2047,7 @@ const UserMenu = ()=>{
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/Auth/UserMenu.js",
-                                    lineNumber: 106,
+                                    lineNumber: 108,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2054,13 +2055,13 @@ const UserMenu = ()=>{
                                     children: user?.data?.email || user?.data?.fullName || ""
                                 }, void 0, false, {
                                     fileName: "[project]/components/Auth/UserMenu.js",
-                                    lineNumber: 109,
+                                    lineNumber: 111,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/Auth/UserMenu.js",
-                            lineNumber: 105,
+                            lineNumber: 107,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2079,18 +2080,18 @@ const UserMenu = ()=>{
                                                     children: item.label
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/Auth/UserMenu.js",
-                                                    lineNumber: 126,
+                                                    lineNumber: 128,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/components/Auth/UserMenu.js",
-                                            lineNumber: 121,
+                                            lineNumber: 123,
                                             columnNumber: 17
                                         }, this)
                                     }, item.href, false, {
                                         fileName: "[project]/components/Auth/UserMenu.js",
-                                        lineNumber: 116,
+                                        lineNumber: 118,
                                         columnNumber: 15
                                     }, this)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$dropdown$2d$menu$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DropdownMenuItem"], {
@@ -2103,7 +2104,7 @@ const UserMenu = ()=>{
                                                 size: 17
                                             }, void 0, false, {
                                                 fileName: "[project]/components/Auth/UserMenu.js",
-                                                lineNumber: 139,
+                                                lineNumber: 141,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2111,41 +2112,41 @@ const UserMenu = ()=>{
                                                 children: "Logout"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/Auth/UserMenu.js",
-                                                lineNumber: 140,
+                                                lineNumber: 142,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/Auth/UserMenu.js",
-                                        lineNumber: 138,
+                                        lineNumber: 140,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/components/Auth/UserMenu.js",
-                                    lineNumber: 131,
+                                    lineNumber: 133,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/Auth/UserMenu.js",
-                            lineNumber: 114,
+                            lineNumber: 116,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/components/Auth/UserMenu.js",
-                    lineNumber: 100,
+                    lineNumber: 102,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/components/Auth/UserMenu.js",
-            lineNumber: 72,
+            lineNumber: 74,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/components/Auth/UserMenu.js",
-        lineNumber: 71,
+        lineNumber: 73,
         columnNumber: 5
     }, this);
 };
@@ -2218,7 +2219,16 @@ function Header() {
     const [mounted, setMounted] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
     const [cartCount, setCartCount] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(0);
     const pathname = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["usePathname"])();
-    const { user } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$redux$2f$dist$2f$react$2d$redux$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useSelector"])((state)=>state.auth) || {};
+    // const { user } = useSelector((state) => state.auth) || {};
+    const { user, isLoggedIn } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$redux$2f$dist$2f$react$2d$redux$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useSelector"])((state)=>state.auth) || {};
+    console.log("User in header 25::", user);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
+        console.log("User in header:", user);
+        console.log("Is Logged In:", isLoggedIn);
+    }, [
+        user,
+        isLoggedIn
+    ]);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         setMounted(true);
         setCartCount((0, __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$cartUtils$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getCartCount"])());
@@ -2272,12 +2282,12 @@ function Header() {
                                         priority: true
                                     }, void 0, false, {
                                         fileName: "[project]/components/Header.js",
-                                        lineNumber: 59,
+                                        lineNumber: 65,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/components/Header.js",
-                                    lineNumber: 58,
+                                    lineNumber: 64,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
@@ -2291,25 +2301,25 @@ function Header() {
                                                     children: link.label
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/Header.js",
-                                                    lineNumber: 76,
+                                                    lineNumber: 82,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                     className: `absolute bottom-[-8px] left-1/2 transform -translate-x-1/2 w-[14px] h-[3px] bg-[#749B3F] rounded-[10px] transition-opacity duration-200 ${link.href === "/" && pathname === "/" || link.href !== "/" && pathname.startsWith(link.href) ? "opacity-100" : "opacity-0"} group-hover:opacity-100`
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/Header.js",
-                                                    lineNumber: 79,
+                                                    lineNumber: 85,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, link.href, true, {
                                             fileName: "[project]/components/Header.js",
-                                            lineNumber: 71,
+                                            lineNumber: 77,
                                             columnNumber: 17
                                         }, this))
                                 }, void 0, false, {
                                     fileName: "[project]/components/Header.js",
-                                    lineNumber: 69,
+                                    lineNumber: 75,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2323,7 +2333,7 @@ function Header() {
                                                     className: "w-6 h-6 fill-current"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/Header.js",
-                                                    lineNumber: 97,
+                                                    lineNumber: 103,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2331,13 +2341,13 @@ function Header() {
                                                     children: "Favorites"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/Header.js",
-                                                    lineNumber: 98,
+                                                    lineNumber: 104,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/components/Header.js",
-                                            lineNumber: 93,
+                                            lineNumber: 99,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -2351,19 +2361,19 @@ function Header() {
                                                         children: cartCount
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/Header.js",
-                                                        lineNumber: 109,
+                                                        lineNumber: 115,
                                                         columnNumber: 21
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/Header.js",
-                                                    lineNumber: 108,
+                                                    lineNumber: 114,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FaShoppingCart"], {
                                                     className: "w-6 h-6 fill-current"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/Header.js",
-                                                    lineNumber: 112,
+                                                    lineNumber: 118,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2371,18 +2381,18 @@ function Header() {
                                                     children: "Cart"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/Header.js",
-                                                    lineNumber: 113,
+                                                    lineNumber: 119,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/components/Header.js",
-                                            lineNumber: 103,
+                                            lineNumber: 109,
                                             columnNumber: 15
                                         }, this),
                                         user ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$Auth$2f$UserMenu$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                                             fileName: "[project]/components/Header.js",
-                                            lineNumber: 119,
+                                            lineNumber: 125,
                                             columnNumber: 17
                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                             onClick: handleLoginClick,
@@ -2392,12 +2402,12 @@ function Header() {
                                                 children: "Sign in"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/Header.js",
-                                                lineNumber: 125,
+                                                lineNumber: 131,
                                                 columnNumber: 19
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/components/Header.js",
-                                            lineNumber: 121,
+                                            lineNumber: 127,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2407,30 +2417,30 @@ function Header() {
                                                 className: "h-6 w-6 text-[#749B3F]"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/Header.js",
-                                                lineNumber: 137,
+                                                lineNumber: 143,
                                                 columnNumber: 19
                                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$menu$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Menu$3e$__["Menu"], {
                                                 className: "h-6 w-6 text-[#749B3F]"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/Header.js",
-                                                lineNumber: 139,
+                                                lineNumber: 145,
                                                 columnNumber: 19
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/components/Header.js",
-                                            lineNumber: 132,
+                                            lineNumber: 138,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/Header.js",
-                                    lineNumber: 92,
+                                    lineNumber: 98,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/Header.js",
-                            lineNumber: 56,
+                            lineNumber: 62,
                             columnNumber: 11
                         }, this),
                         isMobileMenuOpen && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2445,7 +2455,7 @@ function Header() {
                                             children: link.label
                                         }, link.href, false, {
                                             fileName: "[project]/components/Header.js",
-                                            lineNumber: 150,
+                                            lineNumber: 156,
                                             columnNumber: 19
                                         }, this)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -2456,20 +2466,20 @@ function Header() {
                                                 className: "w-5 h-5 text-[#749B3F]"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/Header.js",
-                                                lineNumber: 163,
+                                                lineNumber: 169,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 children: "Favorites"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/Header.js",
-                                                lineNumber: 164,
+                                                lineNumber: 170,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/Header.js",
-                                        lineNumber: 159,
+                                        lineNumber: 165,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -2480,14 +2490,14 @@ function Header() {
                                                 className: "w-5 h-5 text-[#749B3F]"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/Header.js",
-                                                lineNumber: 170,
+                                                lineNumber: 176,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 children: "Cart"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/Header.js",
-                                                lineNumber: 171,
+                                                lineNumber: 177,
                                                 columnNumber: 19
                                             }, this),
                                             cartCount > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2495,13 +2505,13 @@ function Header() {
                                                 children: cartCount
                                             }, void 0, false, {
                                                 fileName: "[project]/components/Header.js",
-                                                lineNumber: 173,
+                                                lineNumber: 179,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/Header.js",
-                                        lineNumber: 166,
+                                        lineNumber: 172,
                                         columnNumber: 17
                                     }, this),
                                     !user && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2512,34 +2522,34 @@ function Header() {
                                             children: "Sign in"
                                         }, void 0, false, {
                                             fileName: "[project]/components/Header.js",
-                                            lineNumber: 184,
+                                            lineNumber: 190,
                                             columnNumber: 21
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/components/Header.js",
-                                        lineNumber: 180,
+                                        lineNumber: 186,
                                         columnNumber: 19
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/Header.js",
-                                lineNumber: 148,
+                                lineNumber: 154,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/components/Header.js",
-                            lineNumber: 147,
+                            lineNumber: 153,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/components/Header.js",
-                    lineNumber: 55,
+                    lineNumber: 61,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/components/Header.js",
-                lineNumber: 54,
+                lineNumber: 60,
                 columnNumber: 7
             }, this),
             isAuthModalOpen && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$Auth$2f$AuthModal$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -2548,7 +2558,7 @@ function Header() {
                 onClose: ()=>setIsAuthModalOpen(false)
             }, void 0, false, {
                 fileName: "[project]/components/Header.js",
-                lineNumber: 195,
+                lineNumber: 201,
                 columnNumber: 9
             }, this)
         ]

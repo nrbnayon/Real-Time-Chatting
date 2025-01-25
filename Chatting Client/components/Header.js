@@ -21,7 +21,10 @@ export default function Header() {
   const [cartCount, setCartCount] = useState(0);
 
   const pathname = usePathname();
-  const { user } = useSelector((state) => state.auth) || {};
+  // const { user } = useSelector((state) => state.auth) || {};
+  const { user, isLoggedIn } = useSelector((state) => state.auth) || {};
+
+  // console.log("User in header 25::", user);
 
   useEffect(() => {
     setMounted(true);
@@ -35,7 +38,7 @@ export default function Header() {
     return () => {
       window.removeEventListener("cartUpdated", updateCartCount);
     };
-  }, []);
+  }, [user, isLoggedIn]);
 
   const handleLoginClick = () => {
     setAuthType("login");

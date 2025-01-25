@@ -23,15 +23,15 @@ export const authApiSlice = apiSlice.injectEndpoints({
 
             if (accessToken) {
               const decodedToken = JSON.parse(atob(accessToken.split(".")[1]));
-              const userData = {
+              const user = {
                 token: accessToken,
-                id: decodedToken.id,
+                _id: decodedToken.id,
                 role: decodedToken.role,
                 email: decodedToken.email,
                 name: decodedToken.name,
               };
-              // console.log("User data from access token", userData);
-              dispatch(setCredentials(userData));
+              // console.log("User data from access token:::::", user);
+              dispatch(setCredentials(user));
             } else {
               logger.warn("Login successful but no access token received");
             }
@@ -129,8 +129,8 @@ export const authApiSlice = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
           const { data } = await queryFulfilled;
-          console.log("data from my profile api...:", data);
-          if (data.user) {
+          console.log("data from my profile api...:", data.user);
+          if (data.success) {
             dispatch(setCredentials(data.user));
           }
         } catch {

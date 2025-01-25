@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 const onlyAuthNotExist = ["/sign-in", "/sign-up", "/forgot-password"];
-const privateRoutes = ["/blogs", "/settings", "/product", "/cart"];
+const privateRoutes = ["/blogs", "/settings", "/product", "/welcome"];
 
 export async function middleware(request) {
   // const dispatch = useDispatch();

@@ -15,9 +15,9 @@ export async function GET() {
   }
 
   try {
-    const apiResponse = await fetch(`${apiUrl}/api/v1/auth/profile`, {
+    const apiResponse = await fetch(`${apiUrl}/api/v1/user/user`, {
       headers: {
-        Authorization: `${accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
     });
@@ -33,10 +33,12 @@ export async function GET() {
     }
 
     const result = data || {};
-    // console.log("data from api route in my profile...", result);
+    const token = cookieStore.get("accessToken")?.value;
+    const user = { ...result?.data, token } || {};
+    // console.log("data from api route in my profile...", user);
     return NextResponse.json({
       success: true,
-      user: result,
+      user,
     });
   } catch (error) {
     console.error("Get current user error:", error);

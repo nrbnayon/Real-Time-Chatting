@@ -74,9 +74,9 @@ async function GET() {
         });
     }
     try {
-        const apiResponse = await fetch(`${apiUrl}/api/v1/auth/profile`, {
+        const apiResponse = await fetch(`${apiUrl}/api/v1/user/user`, {
             headers: {
-                Authorization: `${accessToken}`,
+                Authorization: `Bearer ${accessToken}`,
                 "Content-Type": "application/json"
             }
         });
@@ -91,10 +91,15 @@ async function GET() {
             });
         }
         const result = data || {};
-        // console.log("data from api route in my profile...", result);
+        const token = cookieStore.get("accessToken")?.value;
+        const user = {
+            ...result?.data,
+            token
+        } || {};
+        console.log("data from api route in my profile...", user);
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
             success: true,
-            user: result
+            user
         });
     } catch (error) {
         console.error("Get current user error:", error);

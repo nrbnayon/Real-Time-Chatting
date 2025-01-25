@@ -37,7 +37,7 @@ const privateRoutes = [
     "/blogs",
     "/settings",
     "/product",
-    "/cart"
+    "/welcome"
 ];
 async function middleware(request) {
     // const dispatch = useDispatch();

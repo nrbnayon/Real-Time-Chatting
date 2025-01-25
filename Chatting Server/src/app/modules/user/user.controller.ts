@@ -35,6 +35,7 @@ const createUser = catchAsync(
 
 const getUserProfile = catchAsync(async (req: Request, res: Response) => {
   const user = req.user;
+  // console.log('Request user', user);
   const result = await UserService.getUserProfileFromDB(user);
 
   sendResponse(res, {
@@ -136,11 +137,12 @@ const updateOnlineStatus = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-
 export const UserController = {
   createUser,
   getUserProfile,
   updateProfile,
   getAllUser,
-  getSingleUser,getOnlineUsers,updateOnlineStatus
+  getSingleUser,
+  getOnlineUsers,
+  updateOnlineStatus,
 };
