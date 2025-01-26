@@ -4,52 +4,80 @@ import { logger } from '../shared/logger';
 import { UserService } from '../app/modules/user/user.service';
 
 class SocketHelper {
+  private static connectedSockets = new Map<string, string>();
+
   static socket(io: Server) {
     io.on('connection', (socket: Socket) => {
-      logger.info(colors.blue(`A user connected: ${socket.id}`));
+      logger.info(colors.blue(`[SocketHelper] User connected: ${socket.id}`));
 
-      // User goes online
       socket.on('user-online', async (userId: string) => {
         try {
-          logger.info(colors.green(`User ${userId} is now online`));
+          // Store socket-to-user mapping
+          this.connectedSockets.set(socket.id, userId);
+
+          logger.info(
+            colors.green(`[SocketHelper] User ${userId} is now online`)
+          );
+
+          // Update user online status
           await UserService.updateUserOnlineStatus(userId, true);
-          io.emit('online-users-update');
+
+          // Fetch online users
+          const onlineUsers = await UserService.getOnlineUsers();
+          logger.info(
+            colors.green(
+              `[SocketHelper] Online users found: ${onlineUsers.length}`
+            )
+          );
+
+          // Emit online users to all clients
+          io.emit('online-users-update', onlineUsers);
         } catch (error) {
           logger.error(
-            colors.red(`Error setting user ${userId} online: `),
+            colors.red(`[SocketHelper] Error setting user ${userId} online: `),
             error
           );
         }
       });
 
-      // User goes offline
       socket.on('disconnect', async () => {
-        try {
-          logger.info(colors.red(`A user disconnected: ${socket.id}`));
-          // Optional: Implement offline status update here if needed
-        } catch (error) {
-          logger.error(colors.red('Error handling user disconnect'), error);
+        const userId = this.connectedSockets.get(socket.id);
+
+        if (userId) {
+          try {
+            // Check if user has any other active connections
+            const userSocketCount = Array.from(
+              this.connectedSockets.entries()
+            ).filter(([, id]) => id === userId).length;
+
+            // If no other connections, set user offline
+            if (userSocketCount <= 1) {
+              await UserService.updateUserOnlineStatus(userId, false);
+
+              const onlineUsers = await UserService.getOnlineUsers();
+              io.emit('online-users-update', onlineUsers);
+
+              logger.info(
+                colors.red(`[SocketHelper] User ${userId} set offline`)
+              );
+            }
+
+            // Remove the socket from tracking
+            this.connectedSockets.delete(socket.id);
+          } catch (error) {
+            logger.error(
+              colors.red(`[SocketHelper] Error handling user disconnect: `),
+              error
+            );
+          }
         }
+
+        logger.info(
+          colors.red(`[SocketHelper] User disconnected: ${socket.id}`)
+        );
       });
     });
   }
 }
 
 export const socketHelper = SocketHelper;
-
-// import colors from 'colors';
-// import { Server } from 'socket.io';
-// import { logger } from '../shared/logger';
-
-// const socket = (io: Server) => {
-//   io.on('connection', socket => {
-//     logger.info(colors.blue('A user connected'));
-
-//     //disconnect
-//     socket.on('disconnect', () => {
-//       logger.info(colors.red('A user disconnect'));
-//     });
-//   });
-// };
-
-// export const socketHelper = { socket };

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   const cookieStore = await cookies();
-  const apiUrl = process.env.API_URL;
+  const apiUrl = process.env.API_URL || "http://localhost:4000";
   const accessToken = cookieStore.get("accessToken")?.value;
   // console.log("user cookies:: ", accessToken);
 

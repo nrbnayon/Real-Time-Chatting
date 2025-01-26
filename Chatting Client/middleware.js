@@ -1,21 +1,47 @@
 import { NextResponse } from "next/server";
+import { GenerateSlug } from "./utils/GenerateSlug";
 
-const onlyAuthNotExist = ["/sign-in", "/sign-up", "/forgot-password"];
-const privateRoutes = ["/blogs", "/settings", "/product", "/welcome"];
+const publicRoutes = ["/", "/register", "/login", "/otp-verify"];
 
 export async function middleware(request) {
-  // const dispatch = useDispatch();
   const { pathname } = request.nextUrl;
   const accessToken = request.cookies.get("accessToken")?.value;
-  // console.log("accessToken from  middleware...: ", accessToken);
 
-  const isPrivateRoute = privateRoutes.some((route) =>
-    pathname.startsWith(route)
-  );
+  // If no token, allow public routes
+  if (!accessToken) {
+    return publicRoutes.includes(pathname)
+      ? NextResponse.next()
+      : NextResponse.redirect(new URL("/", request.url));
+  }
 
-  const isAuthRestrictedRoute = onlyAuthNotExist.includes(pathname);
+  try {
+    // Decode token and check expiration
+    const decodedToken = JSON.parse(atob(accessToken.split(".")[1]));
+    const isTokenExpired = Date.now() >= decodedToken.exp * 1000;
 
-  if (isPrivateRoute && !accessToken) {
+    // If token is expired, allow public routes
+    if (isTokenExpired) {
+      return publicRoutes.includes(pathname)
+        ? NextResponse.next()
+        : NextResponse.redirect(new URL("/", request.url));
+    }
+
+    // Generate user-specific route
+    const user = GenerateSlug(decodedToken.name);
+    const userRoute = `welcome-${user}`;
+    const pathSegments = pathname.split("/").filter(Boolean);
+    const firstSegment = pathSegments[0];
+
+    // Redirect to user-specific route if not already on it
+    if (firstSegment !== userRoute) {
+      const additionalPath = pathSegments.slice(1).join("/");
+      const redirectUrl = additionalPath
+        ? `/${userRoute}/${additionalPath}`
+        : `/${userRoute}`;
+      return NextResponse.redirect(new URL(redirectUrl, request.url));
+    }
+  } catch (error) {
+    console.error("Error processing middleware:", error);
     return NextResponse.redirect(new URL("/", request.url));
   }
 
@@ -23,5 +49,5 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|public).*)"],
 };

@@ -1,14 +1,10 @@
-"use client";
-
-import React from "react";
 import "./globals.css";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ReduxProvider } from "@/redux/provider";
 import { Toaster } from "react-hot-toast";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
 import { AuthProvider } from "@/components/AuthProvider/AuthProvider";
-import Header from "@/components/Header";
+import { ClientDndProvider } from "@/components/DndProvider/DndProvider";
+import { SocketProvider } from "@/context/SocketContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,19 +18,18 @@ const geistMono = Geist_Mono({
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang='en'>
       <body
         className={`${geistSans.variable} ${geistMono.variable} fallback-font antialiased`}
       >
         <ReduxProvider>
           <AuthProvider>
-            <DndProvider backend={HTML5Backend}>
-              <Header />
-              {children}
-            </DndProvider>
+            <SocketProvider>
+              <ClientDndProvider>{children}</ClientDndProvider>
+            </SocketProvider>
           </AuthProvider>
         </ReduxProvider>
-        <Toaster position="top-center" />
+        <Toaster position='top-center' />
       </body>
     </html>
   );

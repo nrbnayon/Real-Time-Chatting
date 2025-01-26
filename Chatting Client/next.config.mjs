@@ -2,19 +2,56 @@
 const nextConfig = {
   images: {
     remotePatterns: [
+      // Cloudinary
       {
         protocol: "https",
-        hostname: "**",
+        hostname: "res.cloudinary.com",
+      },
+      {
+        protocol: "http",
+        hostname: "res.cloudinary.com",
+      },
+
+      // Firebase Storage
+      {
+        protocol: "https",
+        hostname: "firebasestorage.googleapis.com",
+      },
+
+      // AWS S3
+      {
+        protocol: "https",
+        hostname: "*.s3.amazonaws.com",
+      },
+
+      // Google Cloud Storage
+      {
+        protocol: "https",
+        hostname: "storage.googleapis.com",
+      },
+
+      // Azure Blob Storage
+      {
+        protocol: "https",
+        hostname: "*.blob.core.windows.net",
+      },
+
+      // General image hosting services
+      {
+        protocol: "https",
+        hostname: "i.imgur.com",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.discordapp.com",
+      },
+
+      // Your own domain
+      {
+        protocol: "https",
+        hostname: "your-domain.com",
       },
     ],
-  },
-  async rewrites() {
-    return [
-      {
-        source: "/api/:path*",
-        destination: "http://10.0.70.205:3000/:path*",
-      },
-    ];
   },
   experimental: {
     turbo: {

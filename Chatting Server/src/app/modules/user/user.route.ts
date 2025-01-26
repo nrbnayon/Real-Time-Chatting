@@ -13,7 +13,6 @@ router.post(
   fileUploadHandler(),
 
   (req: Request, res: Response, next: NextFunction) => {
-    // console.log('User request body in router: ', req.body.data);
     const userData =
       typeof req.body.data === 'string'
         ? JSON.parse(req.body.data)
@@ -79,7 +78,7 @@ router.get(
 
 // Get online users route
 router.get(
-  '/online-users', 
+  '/online-users',
   auth(USER_ROLES.USER, USER_ROLES.ADMIN),
   UserController.getOnlineUsers
 );

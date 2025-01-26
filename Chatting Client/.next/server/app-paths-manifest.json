@@ -1,10 +1,11 @@
 {
-  "/(user)/welcome/page": "app/(user)/welcome/page.js",
+  "/[user]/(dashboard)/new/page": "app/[user]/(dashboard)/new/page.js",
   "/api/user/route": "app/api/user/route.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
   "/_not-found/page": "app/_not-found/page.js",
-  "/(auth)/login/page": "app/(auth)/login/page.js",
-  "/api/login/route": "app/api/login/route.js",
+  "/[user]/page": "app/[user]/page.js",
   "/page": "app/page.js",
-  "/api/logout/route": "app/api/logout/route.js"
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/(auth)/register/page": "app/(auth)/register/page.js",
+  "/(auth)/login/page": "app/(auth)/login/page.js",
+  "/api/login/route": "app/api/login/route.js"
 }

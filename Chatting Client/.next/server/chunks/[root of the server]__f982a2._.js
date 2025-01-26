@@ -62,7 +62,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$serv
 ;
 async function GET() {
     const cookieStore = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$headers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["cookies"])();
-    const apiUrl = process.env.API_URL;
+    const apiUrl = process.env.API_URL || "http://localhost:4000";
     const accessToken = cookieStore.get("accessToken")?.value;
     // console.log("user cookies:: ", accessToken);
     if (!accessToken) {
@@ -96,7 +96,7 @@ async function GET() {
             ...result?.data,
             token
         } || {};
-        console.log("data from api route in my profile...", user);
+        // console.log("data from api route in my profile...", user);
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
             success: true,
             user

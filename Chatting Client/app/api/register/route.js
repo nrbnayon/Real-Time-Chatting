@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
-  const apiUrl = process.env.API_URL;
+  const apiUrl = process.env.API_URL || "http://localhost:4000";
 
   try {
     const formData = await request.formData();

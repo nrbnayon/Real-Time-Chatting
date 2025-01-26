@@ -96,7 +96,7 @@ const getSingleUser = catchAsync(async (req: Request, res: Response) => {
 
 const getOnlineUsers = catchAsync(async (req: Request, res: Response) => {
   // Replace console.log with a logging library in production
-  console.debug('Controller: Retrieving online users');
+  console.log('Controller: Retrieving online users');
 
   const onlineUsers = await UserService.getOnlineUsers();
 
@@ -109,8 +109,9 @@ const getOnlineUsers = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updateOnlineStatus = catchAsync(async (req: Request, res: Response) => {
+  console.log('user updated line 112', req.body);
+  console.log('first update', req.user);
   const { userId, status } = req.body;
-
   // Input validation
   if (!userId || typeof status !== 'boolean') {
     return sendResponse(res, {
@@ -121,9 +122,7 @@ const updateOnlineStatus = catchAsync(async (req: Request, res: Response) => {
   }
 
   // Replace console.log with a logging library in production
-  console.debug(
-    `Controller: Updating user ${userId} online status to ${status}`
-  );
+  console.log(`Controller: Updating user ${userId} online status to ${status}`);
 
   const updatedUser = await UserService.updateUserOnlineStatus(userId, status);
 

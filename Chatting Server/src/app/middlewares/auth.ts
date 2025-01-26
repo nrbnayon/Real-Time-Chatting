@@ -10,7 +10,6 @@ const auth =
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const tokenWithBearer = req.headers.authorization;
-      console.log('User token', tokenWithBearer);
       if (!tokenWithBearer) {
         throw new ApiError(StatusCodes.UNAUTHORIZED, 'You are not authorized');
       }

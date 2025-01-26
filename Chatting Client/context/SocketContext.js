@@ -1,4 +1,5 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
+"use client";
+import { createContext, useState, useEffect, useContext } from "react";
 import { useSelector } from "react-redux";
 import socketService from "../services/socketService";
 
@@ -10,41 +11,53 @@ const SocketContext = createContext({
 export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
-  const { user, id:_id } = useSelector((state) => state.auth);
+  const { user, token } = useSelector((state) => state.auth);
   const apiUrl = process.env.API_URL || "http://localhost:4000";
 
   useEffect(() => {
-    console.log("user", user, "token", token);
-    if (user && id) {
-      // Connect socket
-      const newSocket = socketService.connect(id);
+    console.log("[SocketProvider] Starting useEffect");
+    console.log("[SocketProvider] Current user:", user);
+    console.log("[SocketProvider] Current token:", token);
+
+    if (user && token) {
+      console.log("[SocketProvider] Connecting socket...");
+      const newSocket = socketService.connect(token);
       setSocket(newSocket);
 
-      // Set user online
-      socketService.setUserOnline(user.id);
+      console.log("[SocketProvider] Setting user online...");
+      socketService.setUserOnline(user._id);
 
-      // Listen for online users updates
       const fetchOnlineUsers = async () => {
+        console.log("[SocketProvider] Fetching online users...");
         try {
-          const response = await fetch(`${apiUrl}/api/users/online-users`, {
+          const response = await fetch(`${apiUrl}/api/v1/user/online-users`, {
             headers: {
-              Authorization: `Bearer ${id}`,
+              Authorization: `Bearer ${token}`,
             },
           });
           const data = await response.json();
+          console.log("[SocketProvider] Fetched online users:", data);
           setOnlineUsers(data.data);
         } catch (error) {
-          console.error("Error fetching online users:", error);
+          console.error("[SocketProvider] Error fetching online users:", error);
         }
       };
 
-      socketService.listenOnlineUsers(fetchOnlineUsers);
+      socketService.listenOnlineUsers((users) => {
+        console.log("[SocketProvider] Received online users update:", users);
+        setOnlineUsers(users);
+      });
+
+      fetchOnlineUsers();
 
       return () => {
+        console.log("[SocketProvider] Cleaning up socket connection");
         socketService.disconnect();
       };
     }
-  }, [user, token]);
+  }, [apiUrl, user, token]);
+
+  console.log("[SocketProvider] Rendering with online users:", onlineUsers);
 
   return (
     <SocketContext.Provider value={{ socket, onlineUsers }}>
@@ -53,4 +66,8 @@ export const SocketProvider = ({ children }) => {
   );
 };
 
-export const useSocket = () => useContext(SocketContext);
+export const useSocket = () => {
+  const context = useContext(SocketContext);
+  console.log("[useSocket] Current context:", context);
+  return context;
+};

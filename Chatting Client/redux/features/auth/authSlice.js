@@ -1,3 +1,4 @@
+import socketService from "@/services/socketService";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -12,7 +13,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setCredentials: (state, action) => {
-      console.log("Setting credentials:", action.payload?.token);
+      // console.log("Setting credentials:", action.payload?.token);
       state.user = {
         ...state.user,
         ...action.payload,
@@ -22,7 +23,9 @@ const authSlice = createSlice({
       state.token = action.payload?.token;
     },
     clearCredentials: (state) => {
+      socketService.disconnect();
       state.user = null;
+      state.token = null;
       state.isLoggedIn = false;
       state.isLoading = false;
     },

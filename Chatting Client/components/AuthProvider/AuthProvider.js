@@ -1,26 +1,22 @@
 "use client";
 
-import { useLoggedInUserQuery } from "@/redux/features/auth/authApiSlice";
-import { setLoading } from "@/redux/features/auth/authSlice";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { useLoggedInUserQuery } from "@/redux/features/auth/authApiSlice";
+import { setLoading } from "@/redux/features/auth/authSlice";
+import logger from "@/utils/logger";
 
 export function AuthProvider({ children }) {
   const dispatch = useDispatch();
-  const { refetch } = useLoggedInUserQuery() || {};
+  const { refetch } = useLoggedInUserQuery();
 
   useEffect(() => {
-    const initAuth = async () => {
-      try {
-        await refetch();
-      } catch (error) {
-        console.error("Auth initialization failed:", error);
-      } finally {
+    refetch()
+      .then(() => dispatch(setLoading(false)))
+      .catch((error) => {
+        logger.error("Auth initialization failed:", error);
         dispatch(setLoading(false));
-      }
-    };
-
-    initAuth();
+      });
   }, [refetch, dispatch]);
 
   return children;

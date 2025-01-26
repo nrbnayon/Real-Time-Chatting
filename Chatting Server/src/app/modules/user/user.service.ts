@@ -7,11 +7,12 @@ import ApiError from '../../../errors/ApiError';
 import { emailHelper } from '../../../helpers/emailHelper';
 import { emailTemplate } from '../../../shared/emailTemplate';
 import generateOTP from '../../../util/generateOTP';
-
+import colors from 'colors';
 import { IUser } from './user.interface';
 import { User } from './user.model';
 import { sendNotifications } from '../../../helpers/notificationHelper';
 import unlinkFile from '../../../shared/unlinkFile';
+import { logger } from '../../../shared/logger';
 
 const createUserFromDb = async (payload: IUser) => {
   payload.role = USER_ROLES.USER;
@@ -183,9 +184,30 @@ const getSingleUser = async (id: string): Promise<IUser | null> => {
   return result;
 };
 
-const updateUserOnlineStatus = async (userId: string, isOnline: boolean) => {
-  console.log(`Updating user ${userId} online status to: ${isOnline}`);
+const getOnlineUsers = async () => {
+  try {
+    const onlineUsers = await User.find({
+      onlineStatus: true,
+      lastActiveAt: {
+        $gte: new Date(Date.now() - 5 * 60 * 1000), // Active in last 5 minutes
+      },
+    }).select('name email profileImage');
 
+    logger.info(
+      colors.green(`[UserService] Retrieved ${onlineUsers.length} online users`)
+    );
+
+    return onlineUsers;
+  } catch (error) {
+    logger.error(
+      colors.red('[UserService] Error retrieving online users:'),
+      error
+    );
+    throw error;
+  }
+};
+
+const updateUserOnlineStatus = async (userId: string, isOnline: boolean) => {
   try {
     const user = await User.findByIdAndUpdate(
       userId,
@@ -200,25 +222,18 @@ const updateUserOnlineStatus = async (userId: string, isOnline: boolean) => {
       throw new Error('User not found');
     }
 
-    console.log(`User ${userId} online status updated successfully`);
+    logger.info(
+      colors.green(
+        `[UserService] User ${userId} online status updated to ${isOnline}`
+      )
+    );
+
     return user;
   } catch (error) {
-    console.error('Error updating user online status:', error);
-    throw error;
-  }
-};
-
-const getOnlineUsers = async () => {
-  console.log('Fetching online users');
-  try {
-    const onlineUsers = await User.find({
-      onlineStatus: true,
-    }).select('name email profileImage');
-
-    console.log(`Found ${onlineUsers.length} online users`);
-    return onlineUsers;
-  } catch (error) {
-    console.error('Error fetching online users:', error);
+    logger.error(
+      colors.red(`[UserService] Error updating user ${userId} online status:`),
+      error
+    );
     throw error;
   }
 };
