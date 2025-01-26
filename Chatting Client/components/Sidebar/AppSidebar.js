@@ -1,3 +1,4 @@
+// components\Sidebar\AppSidebar.js
 "use client";
 
 import React, { useState } from "react";
@@ -28,6 +29,7 @@ import { Sidebar } from "../ui/sidebar";
 import { useSocket } from "@/context/SocketContext";
 import { Input } from "../ui/input";
 import { useSelector } from "react-redux";
+import Link from "next/link";
 
 const AppSidebar = () => {
   const { onlineUsers } = useSocket();
@@ -118,6 +120,10 @@ const AppSidebar = () => {
     setChats(chats.filter((chat) => chat.id !== chatId));
   };
 
+  // const handleChatClick = (chatId) => {
+  //   router.push(`/welcome-nayon/chat/${chatId}`);
+  // };
+
   const tabs = [
     {
       id: "chats",
@@ -151,12 +157,21 @@ const AppSidebar = () => {
           <div className='flex items-center gap-2'>
             <div className='relative'>
               <Avatar className='h-10 w-10 border border-gray-300 p-1'>
-                <Image src={LoginUser} alt='User' className='rounded-full' />
+                <Image
+                  src={user?.profileImage || user?.image || LoginUser}
+                  alt='User'
+                  width={100}
+                  height={100}
+                  priority
+                  className='rounded-full'
+                />
               </Avatar>
               <div className='absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-white'></div>
             </div>
             <div className='flex flex-col'>
-              <span className='text-sm font-semibold'>Nayon II</span>
+              <span className='text-sm font-semibold'>
+                {user?.name || user?.email || "User"}
+              </span>
               <span className='text-xs text-gray-500'>Be right back</span>
             </div>
           </div>
@@ -212,6 +227,14 @@ const AppSidebar = () => {
               </button>
             </div>
             <div className='space-y-1 mt-2'>
+              {/* {chats.map((chat) => (
+                <div
+                  key={chat.id}
+                  className={cn(
+                    "w-full flex items-center gap-3 p-2 rounded-md hover:bg-gray-100 transition-colors",
+                    chat.pinned && "bg-blue-50"
+                  )}
+                > */}
               {chats.map((chat) => (
                 <div
                   key={chat.id}
@@ -219,14 +242,17 @@ const AppSidebar = () => {
                     "w-full flex items-center gap-3 p-2 rounded-md hover:bg-gray-100 transition-colors",
                     chat.pinned && "bg-blue-50"
                   )}
+                  onClick={() => handleChatClick(chat.id)}
                 >
                   <div className='relative flex-shrink-0'>
-                    <Avatar className='h-10 w-10 border border-gray-300'>
-                      <AvatarImage src={chat.avatar} alt={chat.name} />
-                      <AvatarFallback>
-                        {chat.name.substring(0, 2)}
-                      </AvatarFallback>
-                    </Avatar>
+                    <Link href={`/welcome-nayon/chat/${chat.id}`}>
+                      <Avatar className='h-10 w-10 border border-gray-300'>
+                        <AvatarImage src={chat.avatar} alt={chat.name} />
+                        <AvatarFallback>
+                          {chat.name.substring(0, 2)}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Link>
                     {chat.status && (
                       <div
                         className={cn(

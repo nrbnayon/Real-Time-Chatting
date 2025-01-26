@@ -8,8 +8,13 @@ const UserHome = () => {
       <div>
         <p className=' text-gray-500 ml-6'>Today {formattedDate}</p>
       </div>
-      <div className='gap-5 mt-5 md:mt-10 px-2 md:px-5 '>
-        <div>New section heree</div>
+      <div className='text-center'>
+        <h1 className='text-2xl font-semibold text-gray-700'>
+          Welcome to Chat
+        </h1>
+        <p className='text-gray-500 mt-2'>
+          Select a conversation to start chatting
+        </p>
       </div>
     </div>
   );
