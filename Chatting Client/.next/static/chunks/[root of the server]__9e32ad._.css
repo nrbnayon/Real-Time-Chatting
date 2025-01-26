@@ -1369,6 +1369,11 @@ img, video {
   background-color: rgb(243 244 246 / var(--tw-bg-opacity, 1));
 }
 
+.bg-gray-50 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));
+}
+
 .bg-green-500 {
   --tw-bg-opacity: 1;
   background-color: rgb(34 197 94 / var(--tw-bg-opacity, 1));
@@ -1424,11 +1429,6 @@ img, video {
 .bg-yellow-500 {
   --tw-bg-opacity: 1;
   background-color: rgb(234 179 8 / var(--tw-bg-opacity, 1));
-}
-
-.bg-gray-50 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));
 }
 
 .bg-gradient-to-br {
@@ -1964,10 +1964,6 @@ img, video {
   font-weight: 500;
 }
 
-.file\:text-foreground::file-selector-button {
-  color: var(--foreground);
-}
-
 .placeholder\:text-neutral-400::placeholder {
   --tw-text-opacity: 1;
   color: rgb(163 163 163 / var(--tw-text-opacity, 1));
@@ -2121,13 +2117,13 @@ img, video {
   box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
 }
 
-.focus-visible\:ring-sidebar-ring:focus-visible {
-  --tw-ring-color: hsl(var(--sidebar-ring));
-}
-
 .focus-visible\:ring-neutral-400:focus-visible {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(163 163 163 / var(--tw-ring-opacity, 1));
+}
+
+.focus-visible\:ring-sidebar-ring:focus-visible {
+  --tw-ring-color: hsl(var(--sidebar-ring));
 }
 
 .focus-visible\:ring-offset-2:focus-visible {
@@ -2449,15 +2445,15 @@ img, video {
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
 }
 
-.dark\:shadow-\[0px_1px_0px_0px_var\(--zinc-800\)_inset\,0px_-1px_0px_0px_var\(--zinc-800\)_inset\]:is(class *) {
-  --tw-shadow: 0px 1px 0px 0px var(--zinc-800) inset, 0px -1px 0px 0px var(--zinc-800) inset;
-  --tw-shadow-colored: inset 0px 1px 0px 0px var(--tw-shadow-color), inset 0px -1px 0px 0px var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-}
-
 .dark\:shadow-\[0px_0px_1px_1px_var\(--neutral-700\)\]:is(class *) {
   --tw-shadow: 0px 0px 1px 1px var(--neutral-700);
   --tw-shadow-colored: 0px 0px 1px 1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.dark\:shadow-\[0px_1px_0px_0px_var\(--zinc-800\)_inset\,0px_-1px_0px_0px_var\(--zinc-800\)_inset\]:is(class *) {
+  --tw-shadow: 0px 1px 0px 0px var(--zinc-800) inset, 0px -1px 0px 0px var(--zinc-800) inset;
+  --tw-shadow-colored: inset 0px 1px 0px 0px var(--tw-shadow-color), inset 0px -1px 0px 0px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 

@@ -1,3 +1,4 @@
+// components\AuthProvider\AuthProvider.js
 "use client";
 
 import { useEffect } from "react";
