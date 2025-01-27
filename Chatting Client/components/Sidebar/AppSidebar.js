@@ -30,11 +30,22 @@ import { useSocket } from "@/context/SocketContext";
 import { Input } from "../ui/input";
 import { useSelector } from "react-redux";
 import Link from "next/link";
+import { useDynamicTypesQuery } from "@/redux/features/dynamicType/dynamicTypeApiSlice";
 
 const AppSidebar = () => {
   const { onlineUsers } = useSocket();
   const { user } = useSelector((state) => state.auth || {});
   console.log("Get Login user in AppSidebar", user);
+
+    const {
+      data: userData,
+      isLoading,
+      isFetching,
+      error,
+    } = useDynamicTypesQuery({
+      dynamicApi: "search-user",
+      searchParams: { searchTerm, page, limit },
+    });
 
   const initialChats = [
     {

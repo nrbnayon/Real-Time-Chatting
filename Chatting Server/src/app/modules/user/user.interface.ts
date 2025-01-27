@@ -14,6 +14,7 @@ export type IUser = {
   verified: boolean;
   profileImage: string;
   image: string;
+  isChatAdmin?: boolean;
   onlineStatus?: boolean;
   lastActiveAt?: Date;
   authentication?: {

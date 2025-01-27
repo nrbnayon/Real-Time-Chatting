@@ -19,3 +19,37 @@ export const useSocket = () => {
     }
   }, [userId]);
 };
+
+
+
+// import { useEffect, useCallback } from "react";
+// import { socket } from "@/utils/socket";
+
+// export const useSocket = () => {
+//   const sendMessage = useCallback((message: any) => {
+//     socket.emit("message:send", message);
+//   }, []);
+
+//   const joinChat = useCallback((chatId: string) => {
+//     socket.emit("chat:join", chatId);
+//   }, []);
+
+//   const leaveChat = useCallback((chatId: string) => {
+//     socket.emit("chat:leave", chatId);
+//   }, []);
+
+//   useEffect(() => {
+//     return () => {
+//       socket.off("connect");
+//       socket.off("disconnect");
+//       socket.off("message:received");
+//     };
+//   }, []);
+
+//   return {
+//     socket,
+//     sendMessage,
+//     joinChat,
+//     leaveChat,
+//   };
+// };

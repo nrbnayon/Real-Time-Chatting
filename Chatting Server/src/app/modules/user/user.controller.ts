@@ -23,11 +23,10 @@ const createUser = catchAsync(
         data: result.email,
       });
     } catch (error) {
-      // Explicitly handle the error type
       if (error instanceof Error) {
-        next(error); // Pass the error to the global error handler
+        next(error);
       } else {
-        next(new Error('An unknown error occurred')); // Handle unknown errors
+        next(new Error('An unknown error occurred'));
       }
     }
   }
@@ -76,10 +75,11 @@ const updateProfile = catchAsync(
 
 const getAllUser = catchAsync(async (req: Request, res: Response) => {
   const result = await UserService.getAllUsers(req.query);
+
   sendResponse(res, {
     success: true,
     statusCode: StatusCodes.OK,
-    message: 'User retrived successfully',
+    message: 'User retrieved successfully',
     data: result,
   });
 });
