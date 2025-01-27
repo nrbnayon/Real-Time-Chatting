@@ -120,10 +120,6 @@ const AppSidebar = () => {
     setChats(chats.filter((chat) => chat.id !== chatId));
   };
 
-  // const handleChatClick = (chatId) => {
-  //   router.push(`/welcome-nayon/chat/${chatId}`);
-  // };
-
   const tabs = [
     {
       id: "chats",
@@ -244,50 +240,51 @@ const AppSidebar = () => {
                   )}
                   onClick={() => handleChatClick(chat.id)}
                 >
-                  <div className='relative flex-shrink-0'>
-                    <Link href={`/welcome-nayon/chat/${chat.id}`}>
+                  <Link href={`/welcome-nayon/chat/${chat.id}`}>
+                    <div className='relative flex-shrink-0'>
                       <Avatar className='h-10 w-10 border border-gray-300'>
                         <AvatarImage src={chat.avatar} alt={chat.name} />
                         <AvatarFallback>
                           {chat.name.substring(0, 2)}
                         </AvatarFallback>
                       </Avatar>
-                    </Link>
-                    {chat.status && (
-                      <div
-                        className={cn(
-                          "absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white",
-                          chat.status === "online"
-                            ? "bg-green-500"
-                            : "bg-yellow-500"
-                        )}
-                      ></div>
-                    )}
-                    {chat.pinned && (
-                      <Pin
-                        className='absolute top-0 right-0 h-3 w-3 text-blue-500'
-                        fill='currentColor'
-                      />
-                    )}
-                  </div>
-                  <div className='flex-1 min-w-0'>
-                    <div className='flex justify-between items-start'>
-                      <span className='text-sm font-semibold truncate'>
-                        {chat.name}
-                      </span>
-                      <span className='text-xs text-gray-500 flex-shrink-0'>
-                        {chat.time}
-                      </span>
+
+                      {chat.status && (
+                        <div
+                          className={cn(
+                            "absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white",
+                            chat.status === "online"
+                              ? "bg-green-500"
+                              : "bg-yellow-500"
+                          )}
+                        ></div>
+                      )}
+                      {chat.pinned && (
+                        <Pin
+                          className='absolute top-0 right-0 h-3 w-3 text-blue-500'
+                          fill='currentColor'
+                        />
+                      )}
                     </div>
-                    <p className='text-sm text-gray-500 truncate'>
-                      {chat.message}
-                    </p>
-                  </div>
-                  {chat.unread && (
-                    <Badge className='h-5 min-w-5 flex items-center text-white justify-center bg-blue-500'>
-                      {chat.unread}
-                    </Badge>
-                  )}
+                    <div className='flex-1 min-w-0'>
+                      <div className='flex justify-between items-start'>
+                        <span className='text-sm font-semibold truncate'>
+                          {chat.name}
+                        </span>
+                        <span className='text-xs text-gray-500 flex-shrink-0'>
+                          {chat.time}
+                        </span>
+                      </div>
+                      <p className='text-sm text-gray-500 truncate'>
+                        {chat.message}
+                      </p>
+                    </div>
+                    {chat.unread && (
+                      <Badge className='h-5 min-w-5 flex items-center text-white justify-center bg-blue-500'>
+                        {chat.unread}
+                      </Badge>
+                    )}
+                  </Link>
                   <DropdownMenu>
                     <DropdownMenuTrigger>
                       <MoreVertical className='h-4 w-4 text-gray-500' />
