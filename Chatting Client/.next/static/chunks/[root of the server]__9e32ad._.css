@@ -1186,12 +1186,6 @@ img, video {
   margin-left: calc(.25rem * calc(1 - var(--tw-space-x-reverse)));
 }
 
-.space-x-2 > :not([hidden]) ~ :not([hidden]) {
-  --tw-space-x-reverse: 0;
-  margin-right: calc(.5rem * var(--tw-space-x-reverse));
-  margin-left: calc(.5rem * calc(1 - var(--tw-space-x-reverse)));
-}
-
 .space-y-1 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-y-reverse: 0;
   margin-top: calc(.25rem * calc(1 - var(--tw-space-y-reverse)));
