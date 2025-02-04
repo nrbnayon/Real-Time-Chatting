@@ -44,6 +44,7 @@ export default function LoginForm() {
         console.log("Login user name and it route:: ", user);
         router.push(`welcome-${user}`);
         toast.success("Login successful!");
+        window.location.reload();
       } else {
         toast.error("Login Faild! Please try again");
         console.error(result.error);
@@ -56,28 +57,28 @@ export default function LoginForm() {
   };
 
   return (
-    <div className='flex items-center justify-center p-4 '>
-      <Card className='w-full bg-white max-w-prose p-4'>
-        <CardHeader className='space-y-2 text-center'>
+    <div className="flex items-center justify-center p-4 ">
+      <Card className="w-full bg-white max-w-prose p-4">
+        <CardHeader className="space-y-2 text-center">
           {/* <MessageCircle className='w-12 h-12 mx-auto text-primary' /> */}
           <Image
             src={Logo}
-            alt='Chatters'
+            alt="Chatters"
             width={100}
             height={100}
-            className='mx-auto'
+            className="mx-auto"
           />
-          <h2 className='text-2xl font-bold'>Welcome Back</h2>
-          <p className='text-muted-foreground'>Login to your account</p>
+          <h2 className="text-2xl font-bold">Welcome Back</h2>
+          <p className="text-muted-foreground">Login to your account</p>
         </CardHeader>
         <form onSubmit={handleSubmit}>
-          <CardContent className='space-y-4'>
-            <div className='space-y-2'>
-              <Label htmlFor='email'>Email</Label>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
               <Input
-                id='email'
-                type='email'
-                placeholder='Enter your email'
+                id="email"
+                type="email"
+                placeholder="Enter your email"
                 value={formData.email}
                 onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
@@ -85,12 +86,12 @@ export default function LoginForm() {
                 required
               />
             </div>
-            <div className='space-y-2'>
-              <Label htmlFor='password'>Password</Label>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
               <Input
-                id='password'
-                type='password'
-                placeholder='Enter your password'
+                id="password"
+                type="password"
+                placeholder="Enter your password"
                 value={formData.password}
                 onChange={(e) =>
                   setFormData({ ...formData, password: e.target.value })
@@ -99,19 +100,19 @@ export default function LoginForm() {
               />
             </div>
           </CardContent>
-          <CardFooter className='flex flex-col space-y-4'>
+          <CardFooter className="flex flex-col space-y-4">
             <Button
-              type='submit'
-              className='w-full bg-green-600 hover:bg-green-700 text-white cursor-pointer'
+              type="submit"
+              className="w-full bg-green-600 hover:bg-green-700 text-white cursor-pointer"
               disabled={isLoading}
             >
               {isLoading ? "Logging in..." : "Login"}
             </Button>
-            <p className='text-sm text-center text-muted-foreground'>
+            <p className="text-sm text-center text-muted-foreground">
               Don&apos;t have an account?{" "}
               <Link
-                href='/register'
-                className='text-primary hover:underline font-medium'
+                href="/register"
+                className="text-primary hover:underline font-medium"
               >
                 Register
               </Link>

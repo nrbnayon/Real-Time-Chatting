@@ -81,8 +81,19 @@ const getAllUsers = async (query: Record<string, unknown>) => {
   const conditions: any[] = [];
 
   if (searchTerm) {
+    const cleanedSearchTerm = searchTerm.toString().replace(/[+\s-]/g, '');
+
     conditions.push({
-      $or: [{ fullName: { $regex: searchTerm, $options: 'i' } }],
+      $or: [
+        { name: { $regex: searchTerm, $options: 'i' } },
+        { email: { $regex: searchTerm, $options: 'i' } },
+        {
+          phone: {
+            $regex: cleanedSearchTerm,
+            $options: 'i',
+          },
+        },
+      ],
     });
   }
 
@@ -96,7 +107,7 @@ const getAllUsers = async (query: Record<string, unknown>) => {
     conditions.push({ $and: filterConditions });
   }
 
-  conditions.push({ role: USER_ROLES.USER });
+  // conditions.push({ role: USER_ROLES.USER });
 
   const whereConditions = conditions.length ? { $and: conditions } : {};
 
@@ -117,7 +128,7 @@ const getAllUsers = async (query: Record<string, unknown>) => {
       .sort(sortCondition)
       .skip(skip)
       .limit(pageSize)
-      .lean<IUser[]>(), // Assert type
+      .lean<IUser[]>(),
     User.countDocuments(whereConditions),
   ]);
 

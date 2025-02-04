@@ -1,3 +1,4 @@
+// src\app\modules\user\user.model.ts
 import bcrypt from 'bcrypt';
 import { StatusCodes } from 'http-status-codes';
 import { model, Schema } from 'mongoose';
@@ -53,20 +54,24 @@ const userSchema = new Schema<IUser, UserModal>(
       default: false,
     },
     profileImage: {
-      type:String
+      type: String,
     },
     image: {
       type: String,
       default:
         'https://www.shutterstock.com/shutterstock/photos/1153673752/display_1500/stock-vector-profile-placeholder-image-gray-silhouette-no-photo-1153673752.jpg',
     },
+    isChatAdmin: {
+      type: Boolean,
+      default: false,
+    },
     onlineStatus: {
       type: Boolean,
-      default: false
+      default: false,
     },
     lastActiveAt: {
       type: Date,
-      default: null
+      default: null,
     },
     authentication: {
       type: {

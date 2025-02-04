@@ -2,6 +2,6 @@
   "version": 3,
   "sources": [],
   "sections": [
-    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file://D%3A/Next%20Js%20Template/Real-Time-Chatting/Chatting%20Client/app/error.js"],"sourcesContent":["\"use client\";\r\n\r\nexport default function Error({ error, reset }) {\r\n  return (\r\n    <div>\r\n      <h2>Something went wrong!</h2>\r\n      <button onClick={() => reset()}>Try again</button>\r\n    </div>\r\n  );\r\n}\r\n"],"names":[],"mappings":";;;;AAAA;;AAEe,SAAS,MAAM,EAAE,KAAK,EAAE,KAAK,EAAE;IAC5C,qBACE,8OAAC;;0BACC,8OAAC;0BAAG;;;;;;0BACJ,8OAAC;gBAAO,SAAS,IAAM;0BAAS;;;;;;;;;;;;AAGtC"}},
+    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file://C%3A/Users/nrbna/Desktop/Real-Time-Chatting/Chatting%20Client/app/error.js"],"sourcesContent":["\"use client\";\r\n\r\nexport default function Error({ error, reset }) {\r\n  return (\r\n    <div>\r\n      <h2>Something went wrong!</h2>\r\n      <button onClick={() => reset()}>Try again</button>\r\n    </div>\r\n  );\r\n}\r\n"],"names":[],"mappings":";;;;AAAA;;AAEe,SAAS,MAAM,EAAE,KAAK,EAAE,KAAK,EAAE;IAC5C,qBACE,8OAAC;;0BACC,8OAAC;0BAAG;;;;;;0BACJ,8OAAC;gBAAO,SAAS,IAAM;0BAAS;;;;;;;;;;;;AAGtC"}},
     {"offset": {"line": 38, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"A"}}]
 }
