@@ -2,5 +2,10 @@
   "/[user]/page": "app/[user]/page.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
   "/api/user/route": "app/api/user/route.js",
-  "/_not-found/page": "app/_not-found/page.js"
+  "/api/chat/route": "app/api/chat/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/[user]/(dashboard)/[chat]/page": "app/[user]/(dashboard)/[chat]/page.js",
+  "/[user]/(dashboard)/chat/[chatId]/page": "app/[user]/(dashboard)/chat/[chatId]/page.js",
+  "/api/messages/[...params]/route": "app/api/messages/[...params]/route.js",
+  "/api/chat/[chatId]/route": "app/api/chat/[chatId]/route.js"
 }
