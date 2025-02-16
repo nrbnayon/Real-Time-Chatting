@@ -6,7 +6,7 @@ const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000/api/v1";
 
 async function fetchWithAuth(url, options = {}) {
-  const cookieStore = await cookies();
+  const cookieStore = cookies();
   const token = cookieStore.get("accessToken")?.value;
 
   const headers = {

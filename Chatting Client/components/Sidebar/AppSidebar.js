@@ -96,7 +96,11 @@ const AppSidebar = () => {
         );
         break;
       case "pinned":
-        filtered = filtered.filter((chat) => chat.isPinned);
+        // filtered = filtered.filter((chat) => chat.isPinned);
+        filtered = filtered.map((chat) => ({
+          ...chat,
+          isPinned: chat.pinnedBy?.includes(user?._id),
+        }));
         break;
       case "archived":
         filtered = filtered.filter((chat) => chat.isArchived);
@@ -159,16 +163,24 @@ const AppSidebar = () => {
     e.preventDefault();
     e.stopPropagation();
 
-    // Check if we already have 4 pinned chats
-    const pinnedChatsCount = chats.filter((chat) => chat.isPinned).length;
     const chatToToggle = chats.find((chat) => chat._id === chatId);
+    const isPinned = chatToToggle.pinnedBy?.includes(user?._id);
 
-    // Only allow pinning if we have less than 4 pins or if we're unpinning
-    if (pinnedChatsCount < 4 || chatToToggle.isPinned) {
-      // Use the new action-based endpoint
+    // If we're unpinning, always allow it
+    if (isPinned) {
+      dispatch(updateChatPin({ chatId, action: "pin" }));
+      return;
+    }
+
+    // Check if we already have 4 pinned chats
+    const userPinnedChats = chats.filter((chat) =>
+      chat.pinnedBy?.includes(user?._id)
+    );
+
+    // Only allow pinning if we have less than 4 pins
+    if (userPinnedChats.length < 4) {
       dispatch(updateChatPin({ chatId, action: "pin" }));
     } else {
-      // Here you could show a toast or alert that max pins reached
       alert("You can only pin up to 4 chats");
     }
   };
@@ -274,7 +286,7 @@ const AppSidebar = () => {
                 <Pin className='h-4 w-4' />
                 {chat.isPinned ? "Unpin chat" : "Pin chat"}
               </DropdownMenuItem>
-              <DropdownMenuItem className='flex items-center gap-2'>
+              {/* <DropdownMenuItem className='flex items-center gap-2'>
                 <Video className='h-4 w-4' />
                 Start video call
               </DropdownMenuItem>
@@ -285,8 +297,8 @@ const AppSidebar = () => {
               >
                 <EyeOff className='h-4 w-4' />
                 Hide chat
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
+              </DropdownMenuItem> */}
+              {/* <DropdownMenuSeparator /> */}
               <DropdownMenuItem
                 onClick={(e) => handleBlockChat(e, chat._id)}
                 className='flex items-center gap-2 text-red-500'

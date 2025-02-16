@@ -44,7 +44,7 @@ export const accessChat = createAsyncThunk(
 
 export const updateChatPin = createAsyncThunk(
   "chat/updateChatPin",
-  async ({ chatId, action }, { rejectWithValue }) => {
+  async ({ chatId, action }, { rejectWithValue, getState }) => {
     try {
       const response = await fetch(`/api/chat/${chatId}?action=pin`, {
         method: "PATCH",
@@ -58,32 +58,20 @@ export const updateChatPin = createAsyncThunk(
       }
 
       const data = await response.json();
-      return data.data;
+
+      // Get current user ID
+      const { auth } = getState();
+      const currentUserId = auth.user?._id;
+
+      // Add isPinned flag based on pinnedBy array
+      return {
+        ...data.data,
+        isPinned: data.data.pinnedBy?.includes(currentUserId),
+      };
     } catch (error) {
       return rejectWithValue(
         error.message || "Failed to update chat pin status"
       );
-    }
-  }
-);
-
-export const deleteChat = createAsyncThunk(
-  "chat/deleteChat",
-  async (chatId, { rejectWithValue }) => {
-    try {
-      // Update to use the new action-based endpoint for "soft" delete
-      const response = await fetch(`/api/chat/${chatId}?action=delete`, {
-        method: "PATCH",
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        return rejectWithValue(error.message || "Failed to delete chat");
-      }
-
-      return chatId;
-    } catch (error) {
-      return rejectWithValue(error.message || "Failed to delete chat");
     }
   }
 );
@@ -116,6 +104,27 @@ export const blockUnblockChat = createAsyncThunk(
       };
     } catch (error) {
       return rejectWithValue(error.message || "Failed to update block status");
+    }
+  }
+);
+
+export const deleteChat = createAsyncThunk(
+  "chat/deleteChat",
+  async (chatId, { rejectWithValue }) => {
+    try {
+      // Update to use the new action-based endpoint for "soft" delete
+      const response = await fetch(`/api/chat/${chatId}?action=delete`, {
+        method: "PATCH",
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        return rejectWithValue(error.message || "Failed to delete chat");
+      }
+
+      return chatId;
+    } catch (error) {
+      return rejectWithValue(error.message || "Failed to delete chat");
     }
   }
 );
