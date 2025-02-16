@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSocket } from "@/context/SocketContext";
 import { useCallHandler } from "@/hooks/useCallHandler";
+import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 
 const ChatHeader = ({ otherUser }) => {
   const { isUserOnline } = useSocket();
@@ -42,12 +43,9 @@ const ChatHeader = ({ otherUser }) => {
   return (
     <div className='flex items-center justify-between p-4 border-b'>
       <div className='flex items-center gap-3'>
-        <Avatar
-          src={otherUser?.image}
-          alt={otherUser?.name}
-          className='h-10 w-10'
-        >
-          {otherUser?.name?.substring(0, 2)}
+        <Avatar className='h-12 w-12 border rounded-full'>
+          <AvatarImage src={otherUser?.image} alt={otherUser?.name} />
+          <AvatarFallback>{otherUser?.name.substring(0, 2)}</AvatarFallback>
         </Avatar>
         <div>
           <h2 className='font-semibold'>{otherUser?.name}</h2>
