@@ -19,6 +19,10 @@ const ChatHeader = ({ otherUser }) => {
   const { startCall } = useCallHandler();
   const { selectedChat } = useSelector((state) => state.chat);
   const { user } = useSelector((state) => state.auth);
+  //   const { messages, sendNewMessage, chatTypingUsers } = useChatMessages(
+  //     chatId,
+  //     initialMessages
+  //   );
 
   const handleStartVideoCall = () => {
     if (selectedChat) {

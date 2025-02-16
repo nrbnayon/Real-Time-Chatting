@@ -1,34 +1,55 @@
 // components/chat/MessageArea.js
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { format, isToday, isYesterday } from "date-fns";
 import { Avatar } from "@/components/ui/avatar";
 import { useSocket } from "@/context/SocketContext";
+// import { Spinner } from "@/components/ui/spinner";
 
-const MessageArea = ({ messages, currentUser }) => {
+const MessageArea = ({ messages = [], currentUser, chatId }) => {
   const messagesEndRef = useRef(null);
-  const { markMessageRead } = useSocket();
+  const { socket, markMessageRead } = useSocket();
+  const [loading, setLoading] = useState(true);
+
+  console.log("Get message:", messagesEndRef, socket, markMessageRead);
 
   // Scroll to bottom when new messages arrive
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const scrollToBottom = () => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    if (messages.length > 0) {
+      scrollToBottom();
+      setLoading(false);
+    }
   }, [messages]);
 
   // Mark unread messages as read
   useEffect(() => {
-    if (messages.length > 0 && currentUser) {
-      messages.forEach((msg) => {
-        if (
+    if (messages.length > 0 && currentUser?._id && chatId) {
+      const unreadMessages = messages.filter(
+        (msg) =>
           msg.sender._id !== currentUser._id &&
           !msg.readBy?.includes(currentUser._id)
-        ) {
-          markMessageRead(msg._id, msg.chat, currentUser._id);
-        }
+      );
+
+      unreadMessages.forEach((msg) => {
+        markMessageRead(msg._id, chatId, currentUser._id);
+
+        // Emit socket event for real-time read status
+        socket?.emit("message-read", {
+          messageId: msg._id,
+          chatId: chatId,
+          userId: currentUser._id,
+        });
       });
     }
-  }, [messages, currentUser, markMessageRead]);
+  }, [messages, currentUser, chatId, markMessageRead, socket]);
 
   // Group messages by date
   const groupedMessages = messages.reduce((groups, message) => {
+    if (!message?.createdAt) return groups;
+
     const date = new Date(message.createdAt);
     let dateStr;
 
@@ -48,6 +69,23 @@ const MessageArea = ({ messages, currentUser }) => {
     return groups;
   }, {});
 
+  if (loading) {
+    return (
+      <div className='flex-1 flex items-center justify-center'>
+        {/* <Spinner size='lg' /> */}
+        Loading ...
+      </div>
+    );
+  }
+
+  if (!messages?.length) {
+    return (
+      <div className='flex-1 flex items-center justify-center text-gray-500'>
+        No messages yet. Start a conversation!
+      </div>
+    );
+  }
+
   return (
     <div className='flex-1 overflow-y-auto p-4 space-y-6'>
       {Object.entries(groupedMessages).map(([date, dateMessages]) => (
@@ -59,7 +97,12 @@ const MessageArea = ({ messages, currentUser }) => {
           </div>
 
           {dateMessages.map((message) => {
-            const isOwnMessage = message.sender._id === currentUser?._id;
+            if (!message?.sender || !currentUser) return null;
+
+            const isOwnMessage = message.sender._id === currentUser._id;
+            const messageTime = message.createdAt
+              ? format(new Date(message.createdAt), "h:mm a")
+              : "";
 
             return (
               <div
@@ -73,12 +116,19 @@ const MessageArea = ({ messages, currentUser }) => {
                     <Avatar
                       src={message.sender.image}
                       className='h-8 w-8 mr-2 mt-1'
+                      alt={message.sender.name}
                     >
-                      {message.sender.name?.substring(0, 2)}
+                      {message.sender.name?.substring(0, 2).toUpperCase()}
                     </Avatar>
                   )}
 
                   <div>
+                    {!isOwnMessage && (
+                      <div className='text-xs text-gray-500 mb-1'>
+                        {message.sender.name}
+                      </div>
+                    )}
+
                     <div
                       className={`rounded-lg px-4 py-2 ${
                         isOwnMessage
@@ -91,7 +141,14 @@ const MessageArea = ({ messages, currentUser }) => {
                           This message was deleted
                         </span>
                       ) : (
-                        <p>{message.content}</p>
+                        <>
+                          <p>{message.content}</p>
+                          {message.isEdited && (
+                            <span className='text-xs ml-1 opacity-70'>
+                              (edited)
+                            </span>
+                          )}
+                        </>
                       )}
                     </div>
 
@@ -100,9 +157,11 @@ const MessageArea = ({ messages, currentUser }) => {
                         isOwnMessage ? "text-right" : ""
                       } text-gray-500`}
                     >
-                      {format(new Date(message.createdAt), "h:mm a")}
-                      {isOwnMessage && message.readBy?.length > 1 && (
-                        <span className='ml-1'>✓✓</span>
+                      {messageTime}
+                      {isOwnMessage && (
+                        <span className='ml-1'>
+                          {message.readBy?.length > 1 ? "✓✓" : "✓"}
+                        </span>
                       )}
                     </div>
                   </div>
